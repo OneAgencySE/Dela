@@ -1,0 +1,13 @@
+[package]
+name = "dela_backend"
+version = "0.1.0"
+authors = ["Alexander Herlin <alexander.herlin@outlook.com>", "Joacim Nidén <jocke@niden.se>"]
+edition = "2018"
+
+[dependencies]
+tonic = "0.3"
+prost = "0.6"
+tokio = { version = "0.2", features = ["macros"] }
+
+[build-dependencies]
+tonic-build = { version="0.3", features = ["prost"] }
