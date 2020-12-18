@@ -15,3 +15,5 @@ protoc helloworld.proto \
      --grpc-swift_out=Visibility=Public,Client=true,Server=false:./Dela_App/Shared/GenGrpcClient \
      --plugin=./Dela_App/protoc-gen-grpc-swift \
      --plugin=./Dela_App/protoc-gen-swift
+
+echo 'API_URL = <ADDRESS>' > ./Dela_App/Shared/local.xcconfig

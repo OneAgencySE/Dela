@@ -24,7 +24,9 @@ class GreeterClient {
 			// We're connecting to our own server here; we'll disable connection re-establishment.
 			.withConnectionReestablishment(enabled: false)
 			// Connect!
-			.connect(host: "http://192.168.1.108", port: 50051)
+			.connect(host: InfoKey.apiUrl.value, port: 50051)
+		
+		print("Connection Status=>:\(channel)")
 		
 		client = Helloworld_GreeterClient(channel: channel)
 		
