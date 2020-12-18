@@ -15,6 +15,8 @@
 		513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */; };
 		51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
+		51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
+		51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
 		8A9AB2B6258B9CEC001974E2 /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */; };
 		8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */; };
 		8AB8B3CB258B885D00D89F15 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8B3CA258B885D00D89F15 /* Tests_iOS.swift */; };
@@ -50,6 +52,7 @@
 		513AE0A0258BAE480030F21A /* GreeterClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreeterClient.swift; sourceTree = "<group>"; };
 		51BF4B1C258CBA930043BD5C /* local.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = "<group>"; };
 		51BF4B29258CBBCF0043BD5C /* InfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoKey.swift; sourceTree = "<group>"; };
+		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helloworld.grpc.swift; sourceTree = "<group>"; };
 		8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helloworld.pb.swift; sourceTree = "<group>"; };
 		8AB8B3AF258B885B00D89F15 /* DelaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelaApp.swift; sourceTree = "<group>"; };
@@ -124,6 +127,7 @@
 				513AE0A0258BAE480030F21A /* GreeterClient.swift */,
 				51BF4B1C258CBA930043BD5C /* local.xcconfig */,
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
+				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -371,6 +375,7 @@
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */,
+				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */,
 				513AE0A1258BAE480030F21A /* GreeterClient.swift in Sources */,
@@ -385,6 +390,7 @@
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */,
+				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				8AB8B3D9258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE0AB258BAF9A0030F21A /* helloworld.grpc.swift in Sources */,
 				513AE09B258BADB20030F21A /* ContentViewModel.swift in Sources */,

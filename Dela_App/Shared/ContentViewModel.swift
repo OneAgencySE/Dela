@@ -22,5 +22,13 @@ class ContentViewModel: ObservableObject {
 		}
 	}
 	
+	func sendImage(_ data: Data?) {
+		guard let data = data else {
+			return
+		}
+		
+		
+	}
+	
 	
 }
