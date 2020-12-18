@@ -1,6 +1,5 @@
-mod greeter;
-
-use greeter::{GreeterServer, MyGreeter};
+mod services;
+use services::{BlobHandlerServer, GreeterServer, MyGreeter};
 use tonic::transport::Server;
 
 #[tokio::main]

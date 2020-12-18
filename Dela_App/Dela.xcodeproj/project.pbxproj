@@ -28,6 +28,12 @@
 		8AB8B3DC258B885D00D89F15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8B3B1258B885D00D89F15 /* Assets.xcassets */; };
 		8AB8B3DD258B885D00D89F15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8B3B1258B885D00D89F15 /* Assets.xcassets */; };
 		8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 8AB8B3F1258B8EE700D89F15 /* GRPC */; };
+		8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */; };
+		8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */; };
+		8AE1F592258CFC3400CD6D01 /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */; };
+		8AE1F593258CFC3400CD6D01 /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */; };
+		8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobClient.swift */; };
+		8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobClient.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +75,9 @@
 		8AB8B3D1258B885D00D89F15 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AB8B3D5258B885D00D89F15 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		8AB8B3D7258B885D00D89F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.grpc.swift; sourceTree = "<group>"; };
+		8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.pb.swift; sourceTree = "<group>"; };
+		8AE1F599258CFC9900CD6D01 /* BlobClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,12 +128,12 @@
 		8AB8B3AE258B885B00D89F15 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				8AE1F598258CFC8100CD6D01 /* Clients */,
 				8AB8B3F7258B99A500D89F15 /* GenGrpcClient */,
 				8AB8B3AF258B885B00D89F15 /* DelaApp.swift */,
 				8AB8B3B0258B885B00D89F15 /* ContentView.swift */,
 				8AB8B3B1258B885D00D89F15 /* Assets.xcassets */,
 				513AE099258BADB20030F21A /* ContentViewModel.swift */,
-				513AE0A0258BAE480030F21A /* GreeterClient.swift */,
 				51BF4B1C258CBA930043BD5C /* local.xcconfig */,
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
 				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
@@ -181,10 +190,21 @@
 		8AB8B3F7258B99A500D89F15 /* GenGrpcClient */ = {
 			isa = PBXGroup;
 			children = (
+				8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */,
+				8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */,
 				8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */,
 				8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */,
 			);
 			path = GenGrpcClient;
+			sourceTree = "<group>";
+		};
+		8AE1F598258CFC8100CD6D01 /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				513AE0A0258BAE480030F21A /* GreeterClient.swift */,
+				8AE1F599258CFC9900CD6D01 /* BlobClient.swift */,
+			);
+			path = Clients;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -349,7 +369,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		8A9AB266258B9A5D001974E2 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
@@ -360,9 +380,9 @@
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nprotoc helloworld.proto \\\n     --proto_path=../Proto \\\n     --swift_out=Visibility=Public:./Shared/GenGrpcClient \\\n     --grpc-swift_out=Visibility=Public,Client=true,Server=false:./Shared/GenGrpcClient \\\n     --plugin=protoc-gen-grpc-swift\n     \n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nfind ../Proto -iname \"*.proto\" -exec protoc {} \\\n     --proto_path=../Proto \\\n     --swift_out=Visibility=Public:./Shared/GenGrpcClient \\\n     --grpc-swift_out=Visibility=Public,Client=true,Server=false:./Shared/GenGrpcClient \\\n     --plugin=protoc-gen-grpc-swift \\;\n     \n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -372,7 +392,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A9AB2B6258B9CEC001974E2 /* helloworld.grpc.swift in Sources */,
+				8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */,
+				8AE1F592258CFC3400CD6D01 /* blob.pb.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
+				8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */,
 				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
@@ -387,7 +410,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */,
+				8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */,
+				8AE1F593258CFC3400CD6D01 /* blob.pb.swift in Sources */,
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,
+				8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */,
 				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,

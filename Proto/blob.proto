@@ -1,0 +1,23 @@
+syntax = "proto3";
+package blob;
+
+service BlobHandler {
+    rpc UploadImage (stream UploadImageRequest) returns (UploadImageResponse);
+}
+
+message ImageInfo {
+    string image_type = 1;
+    string meta_msg = 2;
+}
+
+message UploadImageRequest {
+  oneof data {
+    ImageInfo info = 1;
+    bytes chunk_data = 2;
+  };
+}
+
+  
+message UploadImageResponse {
+  string fetch_url = 1;
+}
