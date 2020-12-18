@@ -8,9 +8,18 @@
 import SwiftUI
 
 struct ContentView: View {
+	
+	@ObservedObject var viewModel = ContentViewModel()
+	
     var body: some View {
-        Text("Hello, world!")
-            .padding()
+		
+		VStack {
+			Button("Tap GRPC") {
+				viewModel.send()
+			}
+			
+			Text(viewModel.greeting ?? "")
+		}
     }
 }
 
