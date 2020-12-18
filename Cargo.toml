@@ -1,4 +1,0 @@
-# Due to the fact that Cargo want's to be in the root of a git folder
-# This Cargo.toml needs to exit
-[workspace]
-members = ["Dela_Backend"]

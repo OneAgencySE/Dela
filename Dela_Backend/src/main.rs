@@ -1,28 +1,7 @@
-use helloworld::{
-    greeter_server::{Greeter, GreeterServer},
-    HelloReply, HelloRequest,
-};
-use tonic::{transport::Server, Request, Response, Status};
+mod greeter;
 
-pub mod helloworld {
-    // The string specified here must match the proto package name
-    tonic::include_proto!("helloworld");
-}
-#[derive(Debug, Default)]
-pub struct MyGreeter {}
-
-#[tonic::async_trait]
-impl Greeter for MyGreeter {
-    async fn say_hello(&self, req: Request<HelloRequest>) -> Result<Response<HelloReply>, Status> {
-        println!("Got a messenger from the client: {:?}", &req);
-
-        let reply = HelloReply {
-            message: format!("Hello {}!", req.into_inner().name).into(),
-        };
-
-        Ok(Response::new(reply))
-    }
-}
+use greeter::{GreeterServer, MyGreeter};
+use tonic::transport::Server;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -35,4 +14,27 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .await?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use helloworld::{greeter_client::GreeterClient, HelloReply, HelloRequest};
+
+    pub mod helloworld {
+        tonic::include_proto!("helloworld");
+    }
+
+    async fn call_hello_world(msg: &str) -> Result<HelloReply, Box<dyn std::error::Error>> {
+        let mut client = GreeterClient::connect("http://[::1]:50051").await?;
+
+        let request = tonic::Request::new(HelloRequest { name: msg.into() });
+
+        Ok(client.say_hello(request).await?.into_inner())
+    }
+
+    #[tokio::test(core_threads = 1)]
+    async fn test_name() {
+        let res = call_hello_world("Smooth").await.unwrap();
+        assert_eq!(res.message, "Hello Smooth!");
+    }
 }
