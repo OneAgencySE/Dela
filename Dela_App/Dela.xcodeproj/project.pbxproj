@@ -217,7 +217,6 @@
 				8AB8B3B2258B885D00D89F15 /* Sources */,
 				8AB8B3B3258B885D00D89F15 /* Frameworks */,
 				8AB8B3B4258B885D00D89F15 /* Resources */,
-				8A9AB266258B9A5D001974E2 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -365,26 +364,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		8A9AB266258B9A5D001974E2 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 12;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nfind ../Proto -iname \"*.proto\" -exec protoc {} \\\n     --proto_path=../Proto \\\n     --swift_out=Visibility=Public:./Shared/GenGrpcClient \\\n     --grpc-swift_out=Visibility=Public,Client=true,Server=false:./Shared/GenGrpcClient \\\n     --plugin=protoc-gen-grpc-swift \\;\n     \n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8AB8B3B2258B885D00D89F15 /* Sources */ = {
