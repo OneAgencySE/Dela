@@ -45,7 +45,7 @@ impl BlobHandler for BlobService {
         file.sync_all()?;
 
         if let Some(f) = file_ext {
-            let _ = std::fs::rename(&guid, format!("{}{}", &guid, f).as_str());
+            let _ = std::fs::rename(&guid, format!("{}{}", &guid, f).as_str()).unwrap();
         }
 
         Ok(Response::new(UploadImageResponse {

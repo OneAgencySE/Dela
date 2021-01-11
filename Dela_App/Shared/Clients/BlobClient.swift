@@ -33,10 +33,26 @@ class BlobClient {
 
     // https://github.com/grpc/grpc-swift/blob/5c20271bc4a63879f17b3e5acab333f230c5b07d/Examples/Google/SpeechToText/Sources/SpeechService.swift
     func uploadImge(data: Data, completion: ((Blob_UploadImageResponse) -> Void)? = nil) {
-
-        let req = Blob_UploadImageRequest.with {
-            $0.chunkData = data
-        }
-        client.uploadImage().sendMessage(req, promise: nil)
+		
+		var dataRequest = Array(data)
+			.chunked(into: 1024)
+			.map { chunk in
+				Blob_UploadImageRequest.with {
+					$0.chunkData = Data(chunk)
+				}
+			}
+		
+		let upload = client.uploadImage()
+		
+		let infoRequest = Blob_UploadImageRequest.with {
+			$0.info = Blob_ImageInfo.with {
+				$0.extension = ".jpeg"
+				$0.metaText = "flowa-powa"
+			}
+		}
+		
+		dataRequest.append(infoRequest)
+		
+		upload.sendMessages(dataRequest, promise: nil)
     }
 }

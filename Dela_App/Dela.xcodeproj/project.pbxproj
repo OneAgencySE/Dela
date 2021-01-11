@@ -17,6 +17,8 @@
 		51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
 		51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
+		51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
+		51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
 		8A8153F025A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F125A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F225A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
@@ -62,8 +64,9 @@
 		513AE0A0258BAE480030F21A /* GreeterClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreeterClient.swift; sourceTree = "<group>"; };
 		51BF4B29258CBBCF0043BD5C /* InfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoKey.swift; sourceTree = "<group>"; };
 		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
+		51C3613225AC739A00C49446 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		8A8153A725A89C4D0070D440 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
-		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = SOURCE_ROOT; };
+		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = local.xcconfig; path = Shared/local.xcconfig; sourceTree = SOURCE_ROOT; };
 		8A81541225AC462F0070D440 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 		8A81541325AC462F0070D440 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		8A81541425AC462F0070D440 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -158,6 +161,7 @@
 				513AE099258BADB20030F21A /* ContentViewModel.swift */,
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
 				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
+				51C3613225AC739A00C49446 /* Array+Extensions.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -443,6 +447,7 @@
 				8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */,
+				51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */,
 				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */,
@@ -461,6 +466,7 @@
 				8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */,
+				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,
 				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				8AB8B3D9258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE0AB258BAF9A0030F21A /* helloworld.grpc.swift in Sources */,
