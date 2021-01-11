@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -65,8 +65,9 @@
 		51BF4B29258CBBCF0043BD5C /* InfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoKey.swift; sourceTree = "<group>"; };
 		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		51C3613225AC739A00C49446 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
+		8A262AD225AC7FAA00FD17BC /* Proto */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Proto; sourceTree = "<group>"; };
 		8A8153A725A89C4D0070D440 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
-		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = local.xcconfig; path = Shared/local.xcconfig; sourceTree = SOURCE_ROOT; };
+		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = SOURCE_ROOT; };
 		8A81541225AC462F0070D440 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
 		8A81541325AC462F0070D440 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		8A81541425AC462F0070D440 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -127,6 +128,7 @@
 		8A8153A625A89BDB0070D440 /* Project */ = {
 			isa = PBXGroup;
 			children = (
+				8A262AD225AC7FAA00FD17BC /* Proto */,
 				8A81541325AC462F0070D440 /* .gitignore */,
 				8A81541425AC462F0070D440 /* README.md */,
 				8A81541225AC462F0070D440 /* setup.sh */,
@@ -417,6 +419,7 @@
 		};
 		8A9AB266258B9A5D001974E2 /* Generate gRPC Client */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);

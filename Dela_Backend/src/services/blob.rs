@@ -11,8 +11,24 @@ use uuid::Uuid;
 pub mod blob {
     tonic::include_proto!("blob");
 }
-#[derive(Debug, Default)]
-pub struct BlobService {}
+#[derive(Debug)]
+pub struct BlobService {
+    output_path: String,
+}
+
+impl BlobService {
+    pub fn new(upload_path: &str) -> Self {
+        let service = BlobService {
+            output_path: upload_path.to_string(),
+        };
+        service.validate_path(upload_path);
+        service
+    }
+
+    fn validate_path(&self, upload_path: &str) {
+        std::fs::read_dir(upload_path).unwrap();
+    }
+}
 
 /// This helped a lot: https://dev.to/anshulgoyal15/a-beginners-guide-to-grpc-with-rust-3c7o
 #[tonic::async_trait]
@@ -21,16 +37,14 @@ impl BlobHandler for BlobService {
         &self,
         stream: tonic::Request<Streaming<UploadImageRequest>>,
     ) -> Result<tonic::Response<UploadImageResponse>, Status> {
-        println!("Woo");
+        let path = format!("{}/{}", &self.output_path, Uuid::new_v4().to_string());
 
-        let guid = Uuid::new_v4().to_string();
-        let mut file_ext: Option<String> = None;
-
-        let mut file: File = match std::fs::File::open(&guid) {
+        let mut file: File = match std::fs::File::open(&path) {
             Ok(f) => f,
-            Err(_) => std::fs::File::create(&guid).unwrap(),
+            Err(_) => std::fs::File::create(&path).unwrap(),
         };
 
+        let mut file_ext: Option<String> = None;
         let mut s = stream.into_inner();
         while let Some(req) = s.message().await? {
             if let Some(d) = req.data {
@@ -42,10 +56,10 @@ impl BlobHandler for BlobService {
                 }
             }
         }
-        file.sync_all()?;
+        file.sync_all().unwrap();
 
         if let Some(f) = file_ext {
-            let _ = std::fs::rename(&guid, format!("{}{}", &guid, f).as_str()).unwrap();
+            let _ = std::fs::rename(&path, format!("{}{}", &path, f).as_str()).unwrap();
         }
 
         Ok(Response::new(UploadImageResponse {

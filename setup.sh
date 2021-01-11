@@ -23,4 +23,4 @@ echo "Be sure to check out the local.xcconfig file"
 echo 'API_URL = <ADDRESS>' > ./Dela_App/local.xcconfig
 
 echo "Be sure to check out the .env file"
-echo 'TEST_JPEG=test_img.jpeg' > ./.env
+echo 'TEST_JPEG=test_img.jpeg\nUPLOAD_PATH=Upload\SERVER_ADDR=0.0.0.0:50051' > ./Dela_Backend/.env

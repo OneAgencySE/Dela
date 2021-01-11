@@ -25,7 +25,6 @@ class GreeterClient {
             // Connect!
             .connect(host: InfoKey.apiUrl.value, port: 50051)
 
-		
         print("Adress: \(InfoKey.apiUrl.value):50051")
         print("Connection Status=>:\(channel.connectivity.state)")
 
