@@ -13,7 +13,7 @@ class BlobClient {
     private let client: Blob_BlobHandlerClient
     private let channel: ClientConnection
     private let group: MultiThreadedEventLoopGroup
-    
+
     init() {
         group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         channel = ClientConnection.insecure(group: group)
@@ -23,13 +23,20 @@ class BlobClient {
             .withConnectionReestablishment(enabled: false)
             // Connect!
             .connect(host: InfoKey.apiUrl.value, port: 50051)
-        
-        print("Connection Status=>:\(channel)")
-        
-        client = Blob_BlobHandlerClient(channel: channel)
+
+        print("Adress: \(InfoKey.apiUrl.value):50051")
+        print("Connection Status=>:\(channel.connectivity.state)")
+
+        let callOption = CallOptions()
+        client = Blob_BlobHandlerClient(channel: channel, defaultCallOptions: callOption)
     }
-    
-    func uploadImge(image: Data) {
-        client.uploadImage(callOptions: <#T##CallOptions?#>)
+
+    // https://github.com/grpc/grpc-swift/blob/5c20271bc4a63879f17b3e5acab333f230c5b07d/Examples/Google/SpeechToText/Sources/SpeechService.swift
+    func uploadImge(data: Data, completion: ((Blob_UploadImageResponse) -> Void)? = nil) {
+
+        let req = Blob_UploadImageRequest.with {
+            $0.chunkData = data
+        }
+        client.uploadImage().sendMessage(req, promise: nil)
     }
 }

@@ -17,4 +17,4 @@ find ./Proto -iname "*.proto" -exec protoc {} \
      --plugin=./Dela_App/protoc-gen-grpc-swift \
      --plugin=./Dela_App/protoc-gen-swift \;
 
-echo 'API_URL = <ADDRESS>' > ./Dela_App/Shared/local.xcconfig
+echo 'API_URL = <ADDRESS>' > ./Dela_App/local.xcconfig

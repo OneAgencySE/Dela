@@ -17,7 +17,6 @@ message UploadImageRequest {
   };
 }
 
-  
 message UploadImageResponse {
   string fetch_url = 1;
 }

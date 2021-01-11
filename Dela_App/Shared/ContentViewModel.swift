@@ -9,26 +9,25 @@ import Foundation
 import Combine
 
 class ContentViewModel: ObservableObject {
-	
+
 	@Published var greeting: String?
-	private let client = GreeterClient()
-	
+	private let greeterClient = GreeterClient()
+    private let blobClient = BlobClient()
+
 	func send() {
-		switch client.hello("I said Hi") {
-			case .success(let message):
+		switch greeterClient.hello("I said Hi") {
+            case .success(let message):
 				greeting = message
 			case .failure(let failure):
 				greeting = failure.localizedDescription
 		}
 	}
-	
+
 	func sendImage(_ data: Data?) {
-		guard let data = data else {
+		guard let image = data else {
 			return
 		}
-		
-		
+        blobClient.uploadImge(data: image)
 	}
-	
-	
+
 }
