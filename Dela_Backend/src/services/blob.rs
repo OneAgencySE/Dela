@@ -1,11 +1,7 @@
 pub use blob::blob_handler_server::BlobHandlerServer;
-use blob::{
-    blob_handler_server::BlobHandler, upload_image_request::Data, UploadImageRequest,
-    UploadImageResponse,
-};
-use std::fs::File;
-use std::io::prelude::*;
-use tonic::{Response, Status, Streaming};
+use blob::{blob_data::Data, blob_handler_server::BlobHandler, BlobData, BlobInfo, FileInfo};
+use tokio::{fs::File, io::AsyncReadExt, io::AsyncWriteExt, sync::mpsc};
+use tonic::{Request, Response, Status, Streaming};
 use uuid::Uuid;
 
 pub mod blob {
@@ -33,38 +29,77 @@ impl BlobService {
 /// This helped a lot: https://dev.to/anshulgoyal15/a-beginners-guide-to-grpc-with-rust-3c7o
 #[tonic::async_trait]
 impl BlobHandler for BlobService {
-    async fn upload_image(
+    type DownloadStream = mpsc::Receiver<Result<BlobData, Status>>;
+
+    async fn upload(
         &self,
-        stream: tonic::Request<Streaming<UploadImageRequest>>,
-    ) -> Result<tonic::Response<UploadImageResponse>, Status> {
-        let path = format!("{}/{}", &self.output_path, Uuid::new_v4().to_string());
-
-        let mut file: File = match std::fs::File::open(&path) {
-            Ok(f) => f,
-            Err(_) => std::fs::File::create(&path).unwrap(),
-        };
-
+        stream: Request<Streaming<BlobData>>,
+    ) -> Result<Response<BlobInfo>, Status> {
+        let mut file_name = Uuid::new_v4().to_string();
+        let path = format!("{}/{}", &self.output_path, file_name);
         let mut file_ext: Option<String> = None;
+
+        let mut file = File::create(&path).await?;
         let mut s = stream.into_inner();
+
         while let Some(req) = s.message().await? {
             if let Some(d) = req.data {
                 match d {
                     Data::Info(info) => file_ext = Some(info.extension),
                     Data::ChunkData(chunk) => {
-                        file.write_all(&chunk)?;
+                        file.write_all(&chunk).await?;
                     }
                 }
             }
         }
-        file.sync_all().unwrap();
+        file.sync_all().await?;
 
-        if let Some(f) = file_ext {
-            let _ = std::fs::rename(&path, format!("{}{}", &path, f).as_str()).unwrap();
+        if let Some(ext) = file_ext {
+            file_name.push_str(&ext);
+            std::fs::rename(&path, format!("{}{}", &path, ext).as_str()).unwrap();
+            Ok(Response::new(BlobInfo { blob_id: file_name }))
+        } else {
+            tokio::fs::remove_file(&path).await?;
+            Err(tonic::Status::aborted("No FileInfo was received!"))
         }
+    }
 
-        Ok(Response::new(UploadImageResponse {
-            fetch_url: String::from("foo"),
-        }))
+    async fn download(
+        &self,
+        request: Request<BlobInfo>,
+    ) -> Result<Response<Self::DownloadStream>, Status> {
+        let (mut tx, rx) = mpsc::channel(5);
+        let blob_path = format!("{}/{}", self.output_path, request.into_inner().blob_id);
+
+        tokio::spawn(async move {
+            let file: tokio::fs::File = tokio::fs::File::open(blob_path).await.unwrap();
+            //.map_err(|_e| tonic::Status::unavailable("File does not exist"))?;
+
+            let mut buffer = [0; 1024];
+            let mut stream = tokio::io::BufStream::new(file);
+
+            while stream.read(&mut buffer).await.unwrap() > 0 {
+                tx.send(Ok(BlobData {
+                    data: Some(Data::ChunkData(buffer.into())),
+                }))
+                .await
+                .unwrap()
+                //.map_err(|e| Status::internal(format!("Unable to send data: {}", e.to_string())))?;
+            }
+
+            tx.send(Ok(BlobData {
+                data: Some(Data::Info(FileInfo {
+                    extension: ".jpeg".to_string(),
+                    file_name: "pretty".to_string(),
+                    meta_text: "Meta text".to_string(),
+                })),
+            }))
+            .await
+            .unwrap()
+            //.map_err(|e| Status::internal(format!("Unable to send data: {}", e.to_string())))?;
+        });
+
+        Ok(Response::new(rx))
     }
 }
 
@@ -72,9 +107,7 @@ impl BlobHandler for BlobService {
 mod tests {
     use super::*;
 
-    use blob::{
-        blob_handler_client::BlobHandlerClient, ImageInfo, UploadImageRequest, UploadImageResponse,
-    };
+    use blob::{blob_handler_client::BlobHandlerClient, BlobData, BlobInfo, FileInfo};
     use dotenv::dotenv;
     use futures::stream::iter;
 
@@ -82,38 +115,81 @@ mod tests {
         tonic::include_proto!("blob");
     }
 
-    async fn upload_image(path: &str) -> Result<UploadImageResponse, Box<dyn std::error::Error>> {
-        let mut file = std::fs::File::open(path).expect("File did not exist!!");
+    async fn upload_image(path: &str) -> Result<BlobInfo, Box<dyn std::error::Error>> {
+        let mut file = tokio::fs::File::open(path)
+            .await
+            .expect("File did not exist!!");
         let mut client = BlobHandlerClient::connect("http://0.0.0.0:50051").await?;
 
         let mut bif = Vec::new();
-        file.read_to_end(&mut bif).expect("Read did not work");
-        let mut arr: Vec<UploadImageRequest> = bif
+        file.read_to_end(&mut bif).await.expect("Read did not work");
+
+        let mut arr: Vec<BlobData> = bif
             .chunks(1024)
-            .map(|x| UploadImageRequest {
+            .map(|x| BlobData {
                 data: Some(Data::ChunkData(x.into())),
             })
             .collect();
 
-        arr.push(UploadImageRequest {
-            data: Some(Data::Info(ImageInfo {
+        arr.push(BlobData {
+            data: Some(Data::Info(FileInfo {
                 extension: ".jpeg".to_string(),
+                file_name: "".to_string(),
                 meta_text: "Smooth".to_string(),
             })),
         });
 
         let request = tonic::Request::new(iter(arr));
-        let res = client.upload_image(request).await?;
+        let res = client.upload(request).await?;
 
         Ok(res.into_inner())
     }
 
-    #[tokio::test(core_threads = 1)]
-    async fn upload() {
-        dotenv().ok();
+    async fn download_image(blob_id: &str, output_path: &str) -> String {
+        let mut client = BlobHandlerClient::connect("http://0.0.0.0:50051")
+            .await
+            .unwrap();
+        let stream = client
+            .download(BlobInfo {
+                blob_id: blob_id.to_string(),
+            })
+            .await
+            .unwrap();
 
+        let path = format!("{}/test_{}", output_path, blob_id);
+        let mut file_ext: Option<String> = None;
+        let mut file = tokio::fs::File::create(&path).await.unwrap();
+
+        let mut s = stream.into_inner();
+
+        while let Some(req) = s.message().await.unwrap() {
+            if let Some(d) = req.data {
+                match d {
+                    Data::Info(info) => file_ext = Some(info.extension),
+                    Data::ChunkData(chunk) => {
+                        file.write_all(&chunk).await.unwrap();
+                    }
+                }
+            }
+        }
+        file.sync_all().await.unwrap();
+
+        assert!(file_ext.is_some());
+        let new_path = format!("{}{}", &path, &file_ext.unwrap());
+        std::fs::rename(&path, &new_path).unwrap();
+        new_path
+    }
+
+    #[tokio::test(core_threads = 1)]
+    async fn upload_download_works() {
+        dotenv().ok();
         let file = dotenv::var("TEST_JPEG").unwrap();
-        let res = upload_image(&file).await.unwrap();
-        assert_eq!(res.fetch_url, "foo".to_string())
+        let path = dotenv::var("UPLOAD_PATH").unwrap();
+
+        let upload = upload_image(&file).await.unwrap();
+        assert!(!upload.blob_id.is_empty());
+
+        let download = download_image(&upload.blob_id, &path).await;
+        assert!(std::fs::read(download).is_ok())
     }
 }

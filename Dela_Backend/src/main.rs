@@ -1,5 +1,3 @@
-use std::net::SocketAddr;
-
 use dotenv::dotenv;
 use services::{BlobHandlerServer, BlobService, GreeterServer, MyGreeter};
 use tonic::transport::Server;
