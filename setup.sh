@@ -1,5 +1,6 @@
 #!/bin/sh
 
+echo "Installing needed depencencies..."
 brew install protobuf
 git clone https://github.com/grpc/grpc-swift.git temp-swift-grpc
 cd temp-swift-grpc
@@ -10,6 +11,7 @@ rm -rf temp-swift-grpc
 
 mkdir ./Dela_App/Shared/GenGrpcClient
 
+echo "Genereating GRPC client...."
 find ./Proto -iname "*.proto" -exec protoc {} \
      --proto_path=./Proto \
      --swift_out=Visibility=Public:./Dela_App/Shared/GenGrpcClient \
@@ -17,4 +19,8 @@ find ./Proto -iname "*.proto" -exec protoc {} \
      --plugin=./Dela_App/protoc-gen-grpc-swift \
      --plugin=./Dela_App/protoc-gen-swift \;
 
+echo "Be sure to check out the local.xcconfig file"
 echo 'API_URL = <ADDRESS>' > ./Dela_App/local.xcconfig
+
+echo "Be sure to check out the .env file"
+echo 'TEST_JPEG=test_img.jpeg' > ./.env

@@ -21,3 +21,26 @@ impl Greeter for MyGreeter {
         Ok(Response::new(reply))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use helloworld::{greeter_client::GreeterClient, HelloReply, HelloRequest};
+
+    pub mod helloworld {
+        tonic::include_proto!("helloworld");
+    }
+
+    async fn call_hello_world(msg: &str) -> Result<HelloReply, Box<dyn std::error::Error>> {
+        let mut client = GreeterClient::connect("http://0.0.0.0:50051").await?;
+
+        let request = tonic::Request::new(HelloRequest { name: msg.into() });
+
+        Ok(client.say_hello(request).await?.into_inner())
+    }
+
+    #[tokio::test(core_threads = 1)]
+    async fn greet() {
+        let res = call_hello_world("Smooth").await.unwrap();
+        assert_eq!(res.message, "Hello Smooth!");
+    }
+}
