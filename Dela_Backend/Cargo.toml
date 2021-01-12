@@ -7,7 +7,12 @@ edition = "2018"
 [dependencies]
 tonic = "0.3"
 prost = "0.6"
-tokio = { version = "0.2", features = ["macros","rt-threaded"] }
+tokio = { version = "0.2", features = ["macros","rt-threaded", "fs"] }
+uuid = { version = "0.8", features = ["v4"] }
+dotenv = "0.15.0"
 
 [build-dependencies]
 tonic-build = { version="0.3", features = ["prost"] }
+
+[dev-dependencies]
+futures = "0.3"

@@ -2,22 +2,23 @@ syntax = "proto3";
 package blob;
 
 service BlobHandler {
-    rpc UploadImage (stream UploadImageRequest) returns (UploadImageResponse);
+    rpc Upload (stream BlobData) returns (BlobInfo);
+    rpc Download (BlobInfo) returns (stream BlobData);
 }
 
-message ImageInfo {
-    string image_type = 1;
-    string meta_msg = 2;
+message FileInfo {
+    string extension = 1;
+    string meta_text = 2;
+    string file_name = 3;
 }
 
-message UploadImageRequest {
-  oneof data {
-    ImageInfo info = 1;
-    bytes chunk_data = 2;
-  };
+message BlobInfo {
+    string blob_id = 1;
 }
 
-  
-message UploadImageResponse {
-  string fetch_url = 1;
+message BlobData {
+    oneof data {
+        FileInfo info = 1;
+        bytes chunk_data = 2;
+    };
 }

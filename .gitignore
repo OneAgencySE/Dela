@@ -2,3 +2,6 @@
 **/.idea
 **/*.lock
 **/.DS_Store
+**/*.orig
+**/*.jpeg
+**/.env
