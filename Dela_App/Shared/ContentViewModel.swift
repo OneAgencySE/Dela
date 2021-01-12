@@ -54,7 +54,7 @@ class ContentViewModel: ObservableObject {
 
 	func initUploadSubscriber() {
 
-        uploadCancellable = uploadPublisher
+		uploadCancellable = uploadPublisher
             .map { [unowned self] input -> AnyPublisher<Blob_BlobInfo, UserInfoError> in
 				self.imageData = input
                 return self.blobClient.uploadImge(data: input)
@@ -92,7 +92,6 @@ class ContentViewModel: ObservableObject {
         }
 
         uploadPublisher.send(image)
-        uploadPublisher.send(completion: .finished)
     }
 
     func send() {
