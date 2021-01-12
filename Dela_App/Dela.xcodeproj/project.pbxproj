@@ -14,6 +14,7 @@
 		513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE0A0258BAE480030F21A /* GreeterClient.swift */; };
 		513AE0AB258BAF9A0030F21A /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */; };
 		513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */; };
+		517B1E3825ADCD9400BDA9CA /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 517B1E3725ADCD9400BDA9CA /* Kingfisher */; };
 		51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
@@ -101,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				517B1E3825ADCD9400BDA9CA /* Kingfisher in Frameworks */,
 				51035EB225AD99120022E391 /* CombineGRPC in Frameworks */,
 				8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */,
 			);
@@ -261,6 +263,7 @@
 			packageProductDependencies = (
 				8AB8B3F1258B8EE700D89F15 /* GRPC */,
 				51035EB125AD99120022E391 /* CombineGRPC */,
+				517B1E3725ADCD9400BDA9CA /* Kingfisher */,
 			);
 			productName = "Dela (iOS)";
 			productReference = 8AB8B3B6258B885D00D89F15 /* Dela.app */;
@@ -356,6 +359,7 @@
 			packageReferences = (
 				8AB8B3F0258B8EE700D89F15 /* XCRemoteSwiftPackageReference "grpc-swift" */,
 				51035EB025AD99110022E391 /* XCRemoteSwiftPackageReference "grpc-swift-combine" */,
+				517B1E3625ADCD9400BDA9CA /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 8AB8B3B7258B885D00D89F15 /* Products */;
 			projectDirPath = "";
@@ -637,6 +641,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5958574TWN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -658,6 +663,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5958574TWN;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -864,6 +870,14 @@
 				minimumVersion = 0.23.0;
 			};
 		};
+		517B1E3625ADCD9400BDA9CA /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.1;
+			};
+		};
 		8AB8B3F0258B8EE700D89F15 /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/grpc/grpc-swift.git";
@@ -879,6 +893,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 51035EB025AD99110022E391 /* XCRemoteSwiftPackageReference "grpc-swift-combine" */;
 			productName = CombineGRPC;
+		};
+		517B1E3725ADCD9400BDA9CA /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 517B1E3625ADCD9400BDA9CA /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 		8AB8B3F1258B8EE700D89F15 /* GRPC */ = {
 			isa = XCSwiftPackageProductDependency;

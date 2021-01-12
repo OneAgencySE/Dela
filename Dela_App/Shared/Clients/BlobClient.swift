@@ -12,9 +12,12 @@ import Combine
 import CombineGRPC
 
 class BlobClient {
+	
     private let client: Blob_BlobHandlerClient
     private let channel: ClientConnection
     private let group: MultiThreadedEventLoopGroup
+	
+	static var shared = BlobClient()
 
     init() {
         group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
@@ -63,8 +66,12 @@ class BlobClient {
                     print("Upload failed")
                 }
             ))
+		
+		/*return Future<Blob_BlobInfo, UserInfoError> { promise in
+			return promise(.success(Blob_BlobInfo.with { $0.blobID = "" }))
+		}.eraseToAnyPublisher()*/
 
-        return grpc.call(client.upload)(requestStream).mapError { (_) -> UserInfoError in
+       return grpc.call(client.upload)(requestStream).mapError { (_) -> UserInfoError in
             .communication(UserInfoError.defaultComMsg)
         }.eraseToAnyPublisher()
     }

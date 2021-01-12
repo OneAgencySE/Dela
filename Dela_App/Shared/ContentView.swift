@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ContentView: View {
+	
 	@ObservedObject var viewModel = ContentViewModel()
-	@State var image: UIImage?
 	@State var openImageSelector = false
 
     var body: some View {
@@ -28,23 +29,29 @@ struct ContentView: View {
                 viewModel.didPressDownload()
             }
 
-			viewModel.image.map {
+			viewModel.downloadedImage.map {
 				Image(uiImage: $0)
 					.resizable()
 					.frame(height: 200)
 					.aspectRatio(contentMode: .fit)
 			}
-
-			image.map {
-				Image(uiImage: $0).resizable()
-					.frame(height: 200)
-					.aspectRatio(contentMode: .fit)
+			
+			viewModel.uploadedImage.map { image in
+				
+				LazyVStack {
+					KFImage(source: .provider(RawImageDataProvider(data: image.0, cacheKey: image.1 )))
+						.resizable()
+						.frame(height: 200)
+						.aspectRatio(contentMode: .fit)
+					Text(image.1 )
+				}
 			}
+			
+			
+
 		}.sheet(isPresented: $openImageSelector) {
 			ImagePickerView(sourceType: .photoLibrary) { image in
-				self.image = image
-                viewModel.didPressUpload(data: image?.jpegData(compressionQuality: 0.5))
-				openImageSelector.toggle()
+				viewModel.didPressUpload(data: image.jpegData(compressionQuality: 0.5))
 			}
 		}
     }

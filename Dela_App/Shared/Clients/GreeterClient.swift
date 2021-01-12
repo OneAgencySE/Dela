@@ -13,8 +13,10 @@ class GreeterClient {
     private let client: Helloworld_GreeterClient
     private let channel: ClientConnection
     private let group: MultiThreadedEventLoopGroup
+	
+	static var shared = GreeterClient()
 
-    init() {
+    private init() {
 
         group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         channel = ClientConnection.insecure(group: group)

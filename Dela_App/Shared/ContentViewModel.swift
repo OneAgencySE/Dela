@@ -12,10 +12,13 @@ import UIKit
 class ContentViewModel: ObservableObject {
 
 	@Published var greeting: String?
-	@Published var image: UIImage?
+	@Published var downloadedImage: UIImage?
+	@Published var uploadedImage: (Data, String)?
+	
+	private var imageData: Data?
 
-    private let greeterClient = GreeterClient()
-    private let blobClient = BlobClient()
+	private let greeterClient = GreeterClient.shared
+	private let blobClient = BlobClient()
 
     private var downloadCancellable: AnyCancellable?
     private let downloadPublisher = PassthroughSubject<String, Never>()
@@ -23,15 +26,15 @@ class ContentViewModel: ObservableObject {
     private var uploadCancellable: AnyCancellable?
     private let uploadPublisher = PassthroughSubject<Data, Never>()
 
-	init() {
-        initDownloadPublisher()
-        initUploadSubscriber()
+	init() {		
+		initDownloadPublisher()
+		initUploadSubscriber()
 	}
 
     func initDownloadPublisher() {
         var downloadImageCache = Data()
         downloadCancellable = downloadPublisher
-            .map { input -> AnyPublisher<Blob_BlobData, UserInfoError> in
+            .map { [unowned self] input -> AnyPublisher<Blob_BlobData, UserInfoError> in
                 return self.blobClient.downloadPublisher(blobId: input)
             }.switchToLatest()
             .subscribe(on: DispatchQueue.global())
@@ -41,7 +44,7 @@ class ContentViewModel: ObservableObject {
                     case .failure(let error):
                         print(error)
                     case .finished:
-                        self.image = UIImage(data: downloadImageCache)
+                        self.downloadedImage = UIImage(data: downloadImageCache)
                         downloadImageCache = Data() // Clear image data
                 }
             } receiveValue: { data in
@@ -50,10 +53,13 @@ class ContentViewModel: ObservableObject {
     }
 
 	func initUploadSubscriber() {
+
         uploadCancellable = uploadPublisher
-            .map { input -> AnyPublisher<Blob_BlobInfo, UserInfoError> in
+            .map { [unowned self] input -> AnyPublisher<Blob_BlobInfo, UserInfoError> in
+				self.imageData = input
                 return self.blobClient.uploadImge(data: input)
-            }.switchToLatest()
+            }
+			.switchToLatest()
             .subscribe(on: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
             .sink { completion in
@@ -63,16 +69,19 @@ class ContentViewModel: ObservableObject {
                     case .finished:
                         print("finished")
                 }
-            } receiveValue: { blobInfo in
-                print(blobInfo)
+            } receiveValue: { [unowned self] blobInfo in
+				if let image = self.imageData {
+					self.uploadedImage = (image, blobInfo.blobID)
+				}
+				
             }
 	}
 
     func didPressDownload() {
         let number = Int.random(in: 0...2)
-        let files = ["6afbc11c-acbe-4a46-abc7-b51bb8b15d76.jpeg",
-                     "36289966-6e07-4447-ae10-a161ded2325c.jpeg",
-                     "test_36289966-6e07-4447-ae10-a161ded2325c.jpeg.jpeg"]
+        let files = ["6ca0447e-5e0c-40c7-89bf-660c35268c4f.jpeg",
+                     "8eb2f759-bf70-432d-b2ed-ad75d24b6f55.jpeg",
+                     "8f8195e2-cae7-4153-b4ec-663c73bf4b65.jpeg"]
         downloadPublisher.send(files[number])
         downloadPublisher.send(completion: .finished)
     }
@@ -81,6 +90,7 @@ class ContentViewModel: ObservableObject {
         guard let image = data else {
             return
         }
+
         uploadPublisher.send(image)
         uploadPublisher.send(completion: .finished)
     }
