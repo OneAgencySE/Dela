@@ -23,7 +23,11 @@ struct ContentView: View {
 			Button("Select image") {
 				openImageSelector.toggle()
 			}
-			
+
+            Button("Download") {
+                viewModel.didPressDownload()
+            }
+
 			viewModel.image.map {
 				Image(uiImage: $0)
 					.resizable()
@@ -39,7 +43,7 @@ struct ContentView: View {
 		}.sheet(isPresented: $openImageSelector) {
 			ImagePickerView(sourceType: .photoLibrary) { image in
 				self.image = image
-				viewModel.sendImage(image?.jpegData(compressionQuality: 0.5))
+                viewModel.didPressUpload(data: image?.jpegData(compressionQuality: 0.5))
 				openImageSelector.toggle()
 			}
 		}

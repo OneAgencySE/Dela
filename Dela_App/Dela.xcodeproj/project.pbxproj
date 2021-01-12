@@ -20,6 +20,8 @@
 		51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
 		51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
 		51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
+		8A262AFB25ADB10900FD17BC /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A262AFA25ADB10900FD17BC /* Error.swift */; };
+		8A262AFC25ADB10900FD17BC /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A262AFA25ADB10900FD17BC /* Error.swift */; };
 		8A8153F025A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F125A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F225A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
@@ -67,6 +69,7 @@
 		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		51C3613225AC739A00C49446 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		8A262AD225AC7FAA00FD17BC /* Proto */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Proto; sourceTree = "<group>"; };
+		8A262AFA25ADB10900FD17BC /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		8A8153A725A89C4D0070D440 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = SOURCE_ROOT; };
 		8A81541225AC462F0070D440 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
@@ -166,6 +169,7 @@
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
 				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
 				51C3613225AC739A00C49446 /* Array+Extensions.swift */,
+				8A262AFA25ADB10900FD17BC /* Error.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -450,6 +454,7 @@
 				8A9AB2B6258B9CEC001974E2 /* helloworld.grpc.swift in Sources */,
 				8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */,
 				8AE1F592258CFC3400CD6D01 /* blob.pb.swift in Sources */,
+				8A262AFB25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
 				8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
@@ -469,6 +474,7 @@
 				513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */,
 				8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */,
 				8AE1F593258CFC3400CD6D01 /* blob.pb.swift in Sources */,
+				8A262AFC25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,
 				8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
