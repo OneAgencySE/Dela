@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51035EB225AD99120022E391 /* CombineGRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 51035EB125AD99120022E391 /* CombineGRPC */; };
 		513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE09B258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE0A1258BAE480030F21A /* GreeterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE0A0258BAE480030F21A /* GreeterClient.swift */; };
@@ -97,6 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				51035EB225AD99120022E391 /* CombineGRPC in Frameworks */,
 				8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -254,6 +256,7 @@
 			name = "Dela (iOS)";
 			packageProductDependencies = (
 				8AB8B3F1258B8EE700D89F15 /* GRPC */,
+				51035EB125AD99120022E391 /* CombineGRPC */,
 			);
 			productName = "Dela (iOS)";
 			productReference = 8AB8B3B6258B885D00D89F15 /* Dela.app */;
@@ -348,6 +351,7 @@
 			mainGroup = 8AB8B3A9258B885A00D89F15;
 			packageReferences = (
 				8AB8B3F0258B8EE700D89F15 /* XCRemoteSwiftPackageReference "grpc-swift" */,
+				51035EB025AD99110022E391 /* XCRemoteSwiftPackageReference "grpc-swift-combine" */,
 			);
 			productRefGroup = 8AB8B3B7258B885D00D89F15 /* Products */;
 			projectDirPath = "";
@@ -846,17 +850,30 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		51035EB025AD99110022E391 /* XCRemoteSwiftPackageReference "grpc-swift-combine" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vyshane/grpc-swift-combine.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.23.0;
+			};
+		};
 		8AB8B3F0258B8EE700D89F15 /* XCRemoteSwiftPackageReference "grpc-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/grpc/grpc-swift.git";
 			requirement = {
 				kind = exactVersion;
-				version = "1.0.0-alpha.21";
+				version = "1.0.0-alpha.22";
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		51035EB125AD99120022E391 /* CombineGRPC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 51035EB025AD99110022E391 /* XCRemoteSwiftPackageReference "grpc-swift-combine" */;
+			productName = CombineGRPC;
+		};
 		8AB8B3F1258B8EE700D89F15 /* GRPC */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8AB8B3F0258B8EE700D89F15 /* XCRemoteSwiftPackageReference "grpc-swift" */;

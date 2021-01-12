@@ -23,6 +23,13 @@ struct ContentView: View {
 			Button("Select image") {
 				openImageSelector.toggle()
 			}
+			
+			viewModel.image.map {
+				Image(uiImage: $0)
+					.resizable()
+					.frame(height: 200)
+					.aspectRatio(contentMode: .fit)
+			}
 
 			image.map {
 				Image(uiImage: $0).resizable()

@@ -8,6 +8,7 @@
 import Foundation
 import GRPC
 import NIO
+import Combine
 
 class BlobClient {
     private let client: Blob_BlobHandlerClient
@@ -62,4 +63,20 @@ class BlobClient {
         } catch {
         }
     }
+	
+	func downloadPublisher() -> AnyPublisher<Data, Error> {
+		let request = Blob_BlobInfo.with {
+			$0.blobID = "8eb2f759-bf70-432d-b2ed-ad75d24b6f55.jpeg"
+		}
+		
+		return Future<Data, Error> { [self] promise in
+			let _ = client.download(request) { data in
+				print("data received")
+				if !data.chunkData.isEmpty {
+					return promise(.success(data.chunkData))
+				}
+			}
+		}.eraseToAnyPublisher()
+		
+	}
 }

@@ -7,12 +7,21 @@
 
 import Foundation
 import Combine
+import UIKit
 
 class ContentViewModel: ObservableObject {
 
 	@Published var greeting: String?
+	@Published var image: UIImage?
+	
 	private let greeterClient = GreeterClient()
     private let blobClient = BlobClient()
+	
+	private var downloadCancellable: AnyCancellable?
+	
+	init() {
+		downloadImages()
+	}
 
 	func send() {
 		switch greeterClient.hello("I said Hi") {
@@ -28,6 +37,25 @@ class ContentViewModel: ObservableObject {
 			return
 		}
         blobClient.uploadImge(data: image)
+	}
+	
+	func downloadImages() {
+		downloadCancellable = blobClient.downloadPublisher()
+			.
+			.subscribe(on: DispatchQueue.global())
+			.receive(on: DispatchQueue.main)
+			.sink { completion in
+				switch completion {
+					case .failure(let error):
+						print(error)
+					case .finished:
+						print("finished")
+				}
+		} receiveValue: { data in
+			
+			self.image = UIImage(data: data)
+		}
+
 	}
 
 }
