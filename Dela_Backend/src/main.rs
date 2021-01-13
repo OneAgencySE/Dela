@@ -1,8 +1,10 @@
 use dotenv::dotenv;
-use services::{BlobHandlerServer, BlobService, GreeterServer, MyGreeter};
+use services::{
+    BlobHandlerServer, BlobService, FeedHandlerServer, FeedService, GreeterServer, MyGreeter,
+};
 use tonic::transport::Server;
 
-use tracing::{info, Level};
+use tracing::Level;
 use tracing_subscriber::FmtSubscriber;
 
 mod services;
@@ -22,9 +24,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let settings = init_settings();
     let greeter = MyGreeter::default();
     let blob_service = BlobService::new(&settings.upload_path);
+    let feed_service = FeedService::default();
 
     Server::builder()
         .add_service(BlobHandlerServer::new(blob_service))
+        .add_service(FeedHandlerServer::new(feed_service))
         .add_service(GreeterServer::new(greeter))
         .serve(settings.server_addr.parse()?)
         .await?;

@@ -56,7 +56,6 @@ class BlobClient {
                 let response = try upload.response.wait()
                 promise(.success(BlobInfo(blobId: response.blobID)))
             } catch {
-                // TODO: Log Error to server
                 promise(.failure(.communication(error.localizedDescription)))
             }
 
@@ -74,7 +73,10 @@ class BlobClient {
                 data.append(blob.chunkData)
 
                 if !blob.info.fileName.isEmpty {
-                    return promise(.success(DownloadedBlob(data: data, fileName: blob.info.fileName, fileExt: blob.info.extension)))
+                    return promise(
+                        .success(DownloadedBlob(data: data,
+                                                fileName: blob.info.fileName,
+                                                fileExt: blob.info.extension)))
                 }
             }
         }.eraseToAnyPublisher()

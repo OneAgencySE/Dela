@@ -1,5 +1,3 @@
-pub use blob::blob_handler_server::BlobHandlerServer;
-use blob::{blob_data::Data, blob_handler_server::BlobHandler, BlobData, BlobInfo, FileInfo};
 use tokio::{fs::File, io::AsyncReadExt, io::AsyncWriteExt, sync::mpsc};
 use tonic::{Request, Response, Status, Streaming};
 use tracing::info;
@@ -8,6 +6,9 @@ use uuid::Uuid;
 pub mod blob {
     tonic::include_proto!("blob");
 }
+pub use blob::blob_handler_server::BlobHandlerServer;
+use blob::{blob_data::Data, blob_handler_server::BlobHandler, BlobData, BlobInfo, FileInfo};
+
 #[derive(Debug)]
 pub struct BlobService {
     output_path: String,
