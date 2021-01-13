@@ -12,14 +12,14 @@ import UIKit
 class ContentViewModel: ObservableObject {
 
 	@Published var greeting: String?
-	@Published var downloadedImage: UIImage?
+	@Published var downloadedImage: (Data, String)?
 	@Published var uploadedImage: (Data, String)?
 	
 	private var imageData: Data?
 
 	private let greeterClient = GreeterClient.shared
-	private let blobClient = BlobClient()
-
+	private let blobClient = BlobClient.shared
+	
     private var downloadCancellable: AnyCancellable?
     private let downloadPublisher = PassthroughSubject<String, Never>()
 
@@ -30,38 +30,56 @@ class ContentViewModel: ObservableObject {
 		initDownloadPublisher()
 		initUploadSubscriber()
 	}
+	
+	private var startTime: Double = 0
+	private var blobStart: Double = 0
+	
+	func buildImage(blobID: String) -> AnyPublisher<(Data, String), UserInfoError> {
+		return self.blobClient.downloadPublisher(blobId: blobID)
+			.handleEvents(receiveSubscription: { _ in
+				self.startTime = Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000
+				print("start", self.startTime)
+			}, receiveOutput: { (blob) in
+				//self.blobStart = Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000
+				
+			}, receiveCompletion: { _ in
+				let endTime = Double(DispatchTime.now().uptimeNanoseconds) / 1_000_000
+				print("end", endTime - self.startTime)
+			})
+			.subscribe(on: DispatchQueue.global())
+			.reduce((Data(), ""), { (fullImage, newData) -> (Data, String) in
+				let data = fullImage.0 + newData.chunkData
+				return (data, newData.info.fileName)
+			})
+			.eraseToAnyPublisher()
+	}
 
     func initDownloadPublisher() {
-        var downloadImageCache = Data()
-        downloadCancellable = downloadPublisher
-            .map { [unowned self] input -> AnyPublisher<Blob_BlobData, UserInfoError> in
-                return self.blobClient.downloadPublisher(blobId: input)
-            }.switchToLatest()
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
+		
+        downloadCancellable = downloadPublisher			
+            .flatMap { [unowned self] input in buildImage(blobID: input) }
+			.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                     case .failure(let error):
                         print(error)
                     case .finished:
-                        self.downloadedImage = UIImage(data: downloadImageCache)
-                        downloadImageCache = Data() // Clear image data
+                       print("finished")
                 }
-            } receiveValue: { data in
-                downloadImageCache.append(data.chunkData)
+            } receiveValue: { blob in
+				self.downloadedImage = (blob.0, blob.1)
             }
     }
 
 	func initUploadSubscriber() {
 
 		uploadCancellable = uploadPublisher
-            .map { [unowned self] input -> AnyPublisher<Blob_BlobInfo, UserInfoError> in
+            .flatMap { [unowned self] input -> AnyPublisher<Blob_BlobInfo, UserInfoError> in
 				self.imageData = input
                 return self.blobClient.uploadImge(data: input)
             }
-			.switchToLatest()
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
+			.subscribe(on: DispatchQueue.global())
+			.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
                     case .failure(let error):
@@ -73,17 +91,18 @@ class ContentViewModel: ObservableObject {
 				if let image = self.imageData {
 					self.uploadedImage = (image, blobInfo.blobID)
 				}
-				
             }
 	}
 
     func didPressDownload() {
         let number = Int.random(in: 0...2)
-        let files = ["6ca0447e-5e0c-40c7-89bf-660c35268c4f.jpeg",
-                     "8eb2f759-bf70-432d-b2ed-ad75d24b6f55.jpeg",
-                     "8f8195e2-cae7-4153-b4ec-663c73bf4b65.jpeg"]
+        let files = ["a2442950-44f6-4bbe-aba5-5f36a1fc71f1.jpeg",
+                     "83133db1-8462-4bc9-b703-db33d8f056a9.jpeg",
+                     "665537c8-2855-4fa6-9d06-df43560fceb5.jpeg"]
+		print(files[number])
         downloadPublisher.send(files[number])
-        downloadPublisher.send(completion: .finished)
+        //downloadPublisher.send(completion: .finished)
+
     }
 
     func didPressUpload(data: Data?) {

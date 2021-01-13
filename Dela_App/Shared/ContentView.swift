@@ -29,11 +29,14 @@ struct ContentView: View {
                 viewModel.didPressDownload()
             }
 
-			viewModel.downloadedImage.map {
-				Image(uiImage: $0)
-					.resizable()
-					.frame(height: 200)
-					.aspectRatio(contentMode: .fit)
+			viewModel.downloadedImage.map { image in
+				LazyVStack {
+					KFImage(source: .provider(RawImageDataProvider(data: image.0, cacheKey: image.1 )))
+						.resizable()
+						.frame(height: 200)
+						.aspectRatio(contentMode: .fit)
+					Text(image.1 )
+				}
 			}
 			
 			viewModel.uploadedImage.map { image in

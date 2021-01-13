@@ -69,7 +69,8 @@ impl BlobHandler for BlobService {
         request: Request<BlobInfo>,
     ) -> Result<Response<Self::DownloadStream>, Status> {
         let (mut tx, rx) = mpsc::channel(5);
-        let blob_path = format!("{}/{}", self.output_path, request.into_inner().blob_id);
+        let file_name = request.into_inner().blob_id;
+        let blob_path = format!("{}/{}", self.output_path, &file_name);
 
         tokio::spawn(async move {
             let file: tokio::fs::File = tokio::fs::File::open(blob_path).await.unwrap();
@@ -90,7 +91,7 @@ impl BlobHandler for BlobService {
             tx.send(Ok(BlobData {
                 data: Some(Data::Info(FileInfo {
                     extension: ".jpeg".to_string(),
-                    file_name: "pretty".to_string(),
+                    file_name: file_name,
                     meta_text: "Meta text".to_string(),
                 })),
             }))

@@ -66,10 +66,6 @@ class BlobClient {
                     print("Upload failed")
                 }
             ))
-		
-		/*return Future<Blob_BlobInfo, UserInfoError> { promise in
-			return promise(.success(Blob_BlobInfo.with { $0.blobID = "" }))
-		}.eraseToAnyPublisher()*/
 
        return grpc.call(client.upload)(requestStream).mapError { (_) -> UserInfoError in
             .communication(UserInfoError.defaultComMsg)
@@ -83,7 +79,7 @@ class BlobClient {
 
         let grpc = GRPCExecutor()
 
-        return grpc.call(client.download)(request)
+		return grpc.call(client.download)(request)
             .mapError { (_) -> UserInfoError in
                 .communication(UserInfoError.defaultComMsg)
             }.eraseToAnyPublisher()
