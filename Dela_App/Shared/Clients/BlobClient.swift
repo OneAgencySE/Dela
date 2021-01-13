@@ -9,14 +9,13 @@ import Foundation
 import GRPC
 import NIO
 import Combine
-import CombineGRPC
 
 class BlobClient {
-	
+
     private let client: Blob_BlobHandlerClient
     private let channel: ClientConnection
     private let group: MultiThreadedEventLoopGroup
-	
+
 	static var shared = BlobClient()
 
     init() {
@@ -30,58 +29,53 @@ class BlobClient {
         print("Connection Status=>:\(channel.connectivity.state)")
     }
 
-    func uploadImge(data: Data) -> AnyPublisher<Blob_BlobInfo, UserInfoError> {
-        
-		var request = Array(data)
-			.chunked(into: 1024)
-			.map { chunk in
-				Blob_BlobData.with {
-					$0.chunkData = Data(chunk)
-				}
-			}
+    func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {
 
-        request.append(Blob_BlobData.with {
-            $0.info = Blob_FileInfo.with {
-                $0.extension = ".jpeg"
-                $0.metaText = "flowa-powa"
-                $0.fileName = ""
-            }
-        })
+        Future<BlobInfo, UserInfoError> { promise in
 
-        let callOptions = CurrentValueSubject<CallOptions, Never>(CallOptions())
-        let requestStream: AnyPublisher<Blob_BlobData, Error> =
-            Publishers.Sequence(sequence: request).eraseToAnyPublisher()
-
-        let grpc = GRPCExecutor(
-            callOptions: callOptions.eraseToAnyPublisher(),
-            retry: .failedCall(
-                upTo: 1,
-                when: { error in
-                    error.status.code == .cancelled
-                },
-                delayUntilNext: { _, _ in
-                    return Just(()).eraseToAnyPublisher()
-                },
-                didGiveUp: {
-                    print("Upload failed")
+            var request = Array(data)
+                .chunked(into: 1024)
+                .map { chunk in
+                    Blob_BlobData.with {
+                        $0.chunkData = Data(chunk)
+                    }
                 }
-            ))
 
-       return grpc.call(client.upload)(requestStream).mapError { (_) -> UserInfoError in
-            .communication(UserInfoError.defaultComMsg)
+            request.append(Blob_BlobData.with {
+                $0.info = Blob_FileInfo.with {
+                    $0.extension = ".jpeg"
+                    $0.metaText = "flowa-powa"
+                    $0.fileName = ""
+                }
+            })
+
+            let upload = self.client.upload()
+            upload.sendMessages(request, promise: nil)
+
+            do {
+                let response = try upload.response.wait()
+                promise(.success(BlobInfo(blobId: response.blobID)))
+            } catch {
+                promise(.failure(.communication(UserInfoError.defaultComMsg)))
+            }
+
         }.eraseToAnyPublisher()
     }
 
-    func downloadPublisher(blobId: String) -> AnyPublisher<Blob_BlobData, UserInfoError> {
-		let request = Blob_BlobInfo.with {
-			$0.blobID = blobId
-		}
+    func downBlobPub(blobId: String) -> AnyPublisher<DownloadedBlob, UserInfoError> {
+        Future<DownloadedBlob, UserInfoError> { promise in
+            let request = Blob_BlobInfo.with {
+                $0.blobID = blobId
+            }
 
-        let grpc = GRPCExecutor()
+            var data = Data()
+            _ = self.client.download(request) { blob in
+                data.append(blob.chunkData)
 
-		return grpc.call(client.download)(request)
-            .mapError { (_) -> UserInfoError in
-                .communication(UserInfoError.defaultComMsg)
-            }.eraseToAnyPublisher()
-	}
+                if !blob.info.fileName.isEmpty {
+                    return promise(.success(DownloadedBlob(data: data, fileName: blob.info.fileName, fileExt: blob.info.extension)))
+                }
+            }
+        }.eraseToAnyPublisher()
+    }
 }

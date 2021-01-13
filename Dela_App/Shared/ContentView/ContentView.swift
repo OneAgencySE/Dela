@@ -9,7 +9,7 @@ import SwiftUI
 import Kingfisher
 
 struct ContentView: View {
-	
+
 	@ObservedObject var viewModel = ContentViewModel()
 	@State var openImageSelector = false
 
@@ -21,6 +21,7 @@ struct ContentView: View {
             if let greeting = viewModel.greeting {
                 Text("\(greeting)")
             }
+
 			Button("Select image") {
 				openImageSelector.toggle()
 			}
@@ -31,16 +32,15 @@ struct ContentView: View {
 
 			viewModel.downloadedImage.map { image in
 				LazyVStack {
-					KFImage(source: .provider(RawImageDataProvider(data: image.0, cacheKey: image.1 )))
+                    KFImage(source: .provider(RawImageDataProvider(data: image.data, cacheKey: image.fileName )))
 						.resizable()
 						.frame(height: 200)
 						.aspectRatio(contentMode: .fit)
-					Text(image.1 )
+					Text(image.fileName )
 				}
 			}
-			
-			viewModel.uploadedImage.map { image in
-				
+
+            viewModel.uploadedImage.map { image in
 				LazyVStack {
 					KFImage(source: .provider(RawImageDataProvider(data: image.0, cacheKey: image.1 )))
 						.resizable()
@@ -49,8 +49,6 @@ struct ContentView: View {
 					Text(image.1 )
 				}
 			}
-			
-			
 
 		}.sheet(isPresented: $openImageSelector) {
 			ImagePickerView(sourceType: .photoLibrary) { image in

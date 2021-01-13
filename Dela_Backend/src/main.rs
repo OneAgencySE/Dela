@@ -2,6 +2,9 @@ use dotenv::dotenv;
 use services::{BlobHandlerServer, BlobService, GreeterServer, MyGreeter};
 use tonic::transport::Server;
 
+use tracing::{info, Level};
+use tracing_subscriber::FmtSubscriber;
+
 mod services;
 
 struct Settings {
@@ -11,6 +14,11 @@ struct Settings {
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let subscriber = FmtSubscriber::builder()
+        .with_max_level(Level::INFO)
+        .finish();
+    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+
     let settings = init_settings();
     let greeter = MyGreeter::default();
     let blob_service = BlobService::new(&settings.upload_path);

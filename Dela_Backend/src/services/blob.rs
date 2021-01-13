@@ -2,6 +2,7 @@ pub use blob::blob_handler_server::BlobHandlerServer;
 use blob::{blob_data::Data, blob_handler_server::BlobHandler, BlobData, BlobInfo, FileInfo};
 use tokio::{fs::File, io::AsyncReadExt, io::AsyncWriteExt, sync::mpsc};
 use tonic::{Request, Response, Status, Streaming};
+use tracing::info;
 use uuid::Uuid;
 
 pub mod blob {
@@ -35,6 +36,7 @@ impl BlobHandler for BlobService {
         &self,
         stream: Request<Streaming<BlobData>>,
     ) -> Result<Response<BlobInfo>, Status> {
+        info!("Uploading image to server");
         let mut file_name = Uuid::new_v4().to_string();
         let path = format!("{}/{}", &self.output_path, file_name);
         let mut file_ext: Option<String> = None;
@@ -56,9 +58,12 @@ impl BlobHandler for BlobService {
 
         if let Some(ext) = file_ext {
             file_name.push_str(&ext);
-            std::fs::rename(&path, format!("{}{}", &path, ext).as_str()).unwrap();
+            let new_path = format!("{}{}", &path, ext);
+            std::fs::rename(&path, new_path.as_str()).unwrap();
+            info!("Upload finished, file is found at: {}", new_path);
             Ok(Response::new(BlobInfo { blob_id: file_name }))
         } else {
+            info!("No FileInfo received, aborting");
             tokio::fs::remove_file(&path).await?;
             Err(tonic::Status::aborted("No FileInfo was received!"))
         }
@@ -70,34 +75,33 @@ impl BlobHandler for BlobService {
     ) -> Result<Response<Self::DownloadStream>, Status> {
         let (mut tx, rx) = mpsc::channel(5);
         let file_name = request.into_inner().blob_id;
+        info!("Requested download of: {}", &file_name);
         let blob_path = format!("{}/{}", self.output_path, &file_name);
 
         tokio::spawn(async move {
             let file: tokio::fs::File = tokio::fs::File::open(blob_path).await.unwrap();
-            //.map_err(|_e| tonic::Status::unavailable("File does not exist"))?;
 
             let mut buffer = [0; 1024];
             let mut stream = tokio::io::BufStream::new(file);
 
+            // Read the file to the end of the buffer size, re-iterate and overwrite buffer data.
             while stream.read(&mut buffer).await.unwrap() > 0 {
                 tx.send(Ok(BlobData {
                     data: Some(Data::ChunkData(buffer.into())),
                 }))
                 .await
                 .unwrap()
-                //.map_err(|e| Status::internal(format!("Unable to send data: {}", e.to_string())))?;
             }
-
             tx.send(Ok(BlobData {
                 data: Some(Data::Info(FileInfo {
                     extension: ".jpeg".to_string(),
-                    file_name: file_name,
+                    file_name: file_name.clone(),
                     meta_text: "Meta text".to_string(),
                 })),
             }))
             .await
-            .unwrap()
-            //.map_err(|e| Status::internal(format!("Unable to send data: {}", e.to_string())))?;
+            .unwrap();
+            info!("Download complete: {}", file_name);
         });
 
         Ok(Response::new(rx))

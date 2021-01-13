@@ -13,7 +13,7 @@ class GreeterClient {
     private let client: Helloworld_GreeterClient
     private let channel: ClientConnection
     private let group: MultiThreadedEventLoopGroup
-	
+
 	static var shared = GreeterClient()
 
     private init() {

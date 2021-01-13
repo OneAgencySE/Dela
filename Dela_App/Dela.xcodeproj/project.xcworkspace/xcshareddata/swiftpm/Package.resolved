@@ -2,30 +2,12 @@
   "object": {
     "pins": [
       {
-        "package": "CombineExt",
-        "repositoryURL": "https://github.com/CombineCommunity/CombineExt.git",
-        "state": {
-          "branch": null,
-          "revision": "6664678135c6aec049c887a51c9da2545f184882",
-          "version": "1.2.0"
-        }
-      },
-      {
         "package": "grpc-swift",
         "repositoryURL": "https://github.com/grpc/grpc-swift.git",
         "state": {
           "branch": null,
           "revision": "ea9c7c5ce7ecf07a3a2a3be6100c5102676e74bb",
           "version": "1.0.0-alpha.22"
-        }
-      },
-      {
-        "package": "CombineGRPC",
-        "repositoryURL": "https://github.com/vyshane/grpc-swift-combine.git",
-        "state": {
-          "branch": null,
-          "revision": "c48401df8e2e4dbd0b3d28ed21ab15ca5e5ac814",
-          "version": "0.23.0"
         }
       },
       {
