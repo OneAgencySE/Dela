@@ -7,12 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66A25B0471C00B1E06B /* feed.pb.swift */; };
+		512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66A25B0471C00B1E06B /* feed.pb.swift */; };
+		512EA67225B0471C00B1E06B /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66B25B0471C00B1E06B /* blob.pb.swift */; };
+		512EA67325B0471C00B1E06B /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66B25B0471C00B1E06B /* blob.pb.swift */; };
+		512EA67425B0471C00B1E06B /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66C25B0471C00B1E06B /* helloworld.grpc.swift */; };
+		512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66C25B0471C00B1E06B /* helloworld.grpc.swift */; };
+		512EA67625B0471C00B1E06B /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66D25B0471C00B1E06B /* helloworld.pb.swift */; };
+		512EA67725B0471C00B1E06B /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66D25B0471C00B1E06B /* helloworld.pb.swift */; };
+		512EA67825B0471C00B1E06B /* feed.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66E25B0471C00B1E06B /* feed.grpc.swift */; };
+		512EA67925B0471C00B1E06B /* feed.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66E25B0471C00B1E06B /* feed.grpc.swift */; };
+		512EA67A25B0471C00B1E06B /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66F25B0471C00B1E06B /* blob.grpc.swift */; };
+		512EA67B25B0471C00B1E06B /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66F25B0471C00B1E06B /* blob.grpc.swift */; };
 		513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE09B258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE0A1258BAE480030F21A /* GreeterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE0A0258BAE480030F21A /* GreeterClient.swift */; };
 		513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE0A0258BAE480030F21A /* GreeterClient.swift */; };
-		513AE0AB258BAF9A0030F21A /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */; };
-		513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */; };
 		517B1E3825ADCD9400BDA9CA /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 517B1E3725ADCD9400BDA9CA /* Kingfisher */; };
 		51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
@@ -28,10 +38,6 @@
 		8A8153F325A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A97B2BE25AF0BEA00373D76 /* DownloadedBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2BD25AF0BEA00373D76 /* DownloadedBlob.swift */; };
 		8A97B2DA25AF15DC00373D76 /* BlobInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2D925AF15DC00373D76 /* BlobInfo.swift */; };
-		8A97B2E125AF310700373D76 /* feed.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2DF25AF310700373D76 /* feed.pb.swift */; };
-		8A97B2E225AF310700373D76 /* feed.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2E025AF310700373D76 /* feed.grpc.swift */; };
-		8A9AB2B6258B9CEC001974E2 /* helloworld.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */; };
-		8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */; };
 		8AB8B3CB258B885D00D89F15 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8B3CA258B885D00D89F15 /* Tests_iOS.swift */; };
 		8AB8B3D6258B885D00D89F15 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8B3D5258B885D00D89F15 /* Tests_macOS.swift */; };
 		8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8B3AF258B885B00D89F15 /* DelaApp.swift */; };
@@ -41,10 +47,6 @@
 		8AB8B3DC258B885D00D89F15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8B3B1258B885D00D89F15 /* Assets.xcassets */; };
 		8AB8B3DD258B885D00D89F15 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8AB8B3B1258B885D00D89F15 /* Assets.xcassets */; };
 		8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 8AB8B3F1258B8EE700D89F15 /* GRPC */; };
-		8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */; };
-		8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */; };
-		8AE1F592258CFC3400CD6D01 /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */; };
-		8AE1F593258CFC3400CD6D01 /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */; };
 		8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobClient.swift */; };
 		8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobClient.swift */; };
 /* End PBXBuildFile section */
@@ -67,8 +69,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		512EA66A25B0471C00B1E06B /* feed.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.pb.swift; sourceTree = "<group>"; };
+		512EA66B25B0471C00B1E06B /* blob.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.pb.swift; sourceTree = "<group>"; };
+		512EA66C25B0471C00B1E06B /* helloworld.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.grpc.swift; sourceTree = "<group>"; };
+		512EA66D25B0471C00B1E06B /* helloworld.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.pb.swift; sourceTree = "<group>"; };
+		512EA66E25B0471C00B1E06B /* feed.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.grpc.swift; sourceTree = "<group>"; };
+		512EA66F25B0471C00B1E06B /* blob.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.grpc.swift; sourceTree = "<group>"; };
 		513AE099258BADB20030F21A /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		513AE0A0258BAE480030F21A /* GreeterClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreeterClient.swift; sourceTree = "<group>"; };
+		51AF093125B0360F00B0ABA9 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = Dela_App/Scripts; sourceTree = "<group>"; };
 		51BF4B29258CBBCF0043BD5C /* InfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoKey.swift; sourceTree = "<group>"; };
 		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		51C3613225AC739A00C49446 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
@@ -81,10 +90,6 @@
 		8A81541425AC462F0070D440 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8A97B2BD25AF0BEA00373D76 /* DownloadedBlob.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadedBlob.swift; sourceTree = "<group>"; };
 		8A97B2D925AF15DC00373D76 /* BlobInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobInfo.swift; sourceTree = "<group>"; };
-		8A97B2DF25AF310700373D76 /* feed.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.pb.swift; sourceTree = "<group>"; };
-		8A97B2E025AF310700373D76 /* feed.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.grpc.swift; sourceTree = "<group>"; };
-		8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helloworld.grpc.swift; sourceTree = "<group>"; };
-		8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = helloworld.pb.swift; sourceTree = "<group>"; };
 		8AB8B3AF258B885B00D89F15 /* DelaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelaApp.swift; sourceTree = "<group>"; };
 		8AB8B3B0258B885B00D89F15 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		8AB8B3B1258B885D00D89F15 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -99,8 +104,6 @@
 		8AB8B3D1258B885D00D89F15 /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8AB8B3D5258B885D00D89F15 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		8AB8B3D7258B885D00D89F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.grpc.swift; sourceTree = "<group>"; };
-		8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.pb.swift; sourceTree = "<group>"; };
 		8AE1F599258CFC9900CD6D01 /* BlobClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobClient.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,9 +141,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		512EA66925B0471C00B1E06B /* GenGrpcClient */ = {
+			isa = PBXGroup;
+			children = (
+				512EA66A25B0471C00B1E06B /* feed.pb.swift */,
+				512EA66B25B0471C00B1E06B /* blob.pb.swift */,
+				512EA66C25B0471C00B1E06B /* helloworld.grpc.swift */,
+				512EA66D25B0471C00B1E06B /* helloworld.pb.swift */,
+				512EA66E25B0471C00B1E06B /* feed.grpc.swift */,
+				512EA66F25B0471C00B1E06B /* blob.grpc.swift */,
+			);
+			path = GenGrpcClient;
+			sourceTree = "<group>";
+		};
 		8A8153A625A89BDB0070D440 /* Project */ = {
 			isa = PBXGroup;
 			children = (
+				51AF093125B0360F00B0ABA9 /* Scripts */,
 				8A262AD225AC7FAA00FD17BC /* Proto */,
 				8A81541325AC462F0070D440 /* .gitignore */,
 				8A81541425AC462F0070D440 /* README.md */,
@@ -173,6 +190,7 @@
 		8A97B2D425AF128100373D76 /* Lib */ = {
 			isa = PBXGroup;
 			children = (
+				512EA66925B0471C00B1E06B /* GenGrpcClient */,
 				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
 			);
 			path = Lib;
@@ -198,7 +216,6 @@
 				8A97B2CB25AF123500373D76 /* ContentView */,
 				8A97B2BC25AF0BDA00373D76 /* Models */,
 				8AE1F598258CFC8100CD6D01 /* Clients */,
-				8AB8B3F7258B99A500D89F15 /* GenGrpcClient */,
 				8AB8B3AF258B885B00D89F15 /* DelaApp.swift */,
 				8AB8B3B1258B885D00D89F15 /* Assets.xcassets */,
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
@@ -254,19 +271,6 @@
 			path = "Tests macOS";
 			sourceTree = "<group>";
 		};
-		8AB8B3F7258B99A500D89F15 /* GenGrpcClient */ = {
-			isa = PBXGroup;
-			children = (
-				8A97B2E025AF310700373D76 /* feed.grpc.swift */,
-				8A97B2DF25AF310700373D76 /* feed.pb.swift */,
-				8AE1F58E258CFC3400CD6D01 /* blob.grpc.swift */,
-				8AE1F58F258CFC3400CD6D01 /* blob.pb.swift */,
-				8A9AB2B5258B9CEC001974E2 /* helloworld.grpc.swift */,
-				8A9AB2BB258B9D06001974E2 /* helloworld.pb.swift */,
-			);
-			path = GenGrpcClient;
-			sourceTree = "<group>";
-		};
 		8AE1F598258CFC8100CD6D01 /* Clients */ = {
 			isa = PBXGroup;
 			children = (
@@ -283,10 +287,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8AB8B3E0258B885D00D89F15 /* Build configuration list for PBXNativeTarget "Dela (iOS)" */;
 			buildPhases = (
+				8A9AB266258B9A5D001974E2 /* Generate gRPC Client */,
 				8AB8B3B2258B885D00D89F15 /* Sources */,
 				8AB8B3B3258B885D00D89F15 /* Frameworks */,
 				8AB8B3B4258B885D00D89F15 /* Resources */,
-				8A9AB266258B9A5D001974E2 /* Generate gRPC Client */,
 				8A81538625A83C300070D440 /* SwiftLint */,
 			);
 			buildRules = (
@@ -478,7 +482,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nfind ../Proto -iname \"*.proto\" -exec protoc {} \\\n     --proto_path=../Proto \\\n     --swift_out=Visibility=Public:./Shared/GenGrpcClient \\\n     --grpc-swift_out=Visibility=Public,Client=true,Server=false:./Shared/GenGrpcClient \\\n     --plugin=protoc-gen-grpc-swift \\;\n     \n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n$SRCROOT/Scripts/generateproto.sh\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -487,20 +491,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A9AB2B6258B9CEC001974E2 /* helloworld.grpc.swift in Sources */,
+				512EA67425B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */,
-				8AE1F592258CFC3400CD6D01 /* blob.pb.swift in Sources */,
 				8A97B2BE25AF0BEA00373D76 /* DownloadedBlob.swift in Sources */,
 				8A262AFB25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
+				512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */,
 				8A97B2DA25AF15DC00373D76 /* BlobInfo.swift in Sources */,
-				8AE1F590258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
+				512EA67225B0471C00B1E06B /* blob.pb.swift in Sources */,
+				512EA67825B0471C00B1E06B /* feed.grpc.swift in Sources */,
+				512EA67A25B0471C00B1E06B /* blob.grpc.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
-				8A9AB2BC258B9D06001974E2 /* helloworld.pb.swift in Sources */,
+				512EA67625B0471C00B1E06B /* helloworld.pb.swift in Sources */,
 				51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */,
-				8A97B2E225AF310700373D76 /* feed.grpc.swift in Sources */,
 				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
-				8A97B2E125AF310700373D76 /* feed.pb.swift in Sources */,
 				8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */,
 				513AE0A1258BAE480030F21A /* GreeterClient.swift in Sources */,
@@ -511,18 +515,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				513AE0B0258BAF9C0030F21A /* helloworld.pb.swift in Sources */,
 				8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */,
-				8AE1F593258CFC3400CD6D01 /* blob.pb.swift in Sources */,
 				8A262AFC25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,
-				8AE1F591258CFC3400CD6D01 /* blob.grpc.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
+				512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */,
 				513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */,
+				512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,
+				512EA67B25B0471C00B1E06B /* blob.grpc.swift in Sources */,
+				512EA67925B0471C00B1E06B /* feed.grpc.swift in Sources */,
 				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
+				512EA67325B0471C00B1E06B /* blob.pb.swift in Sources */,
 				8AB8B3D9258B885D00D89F15 /* DelaApp.swift in Sources */,
-				513AE0AB258BAF9A0030F21A /* helloworld.grpc.swift in Sources */,
+				512EA67725B0471C00B1E06B /* helloworld.pb.swift in Sources */,
 				513AE09B258BADB20030F21A /* ContentViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -677,7 +683,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LBV7BKB3S9;
+				DEVELOPMENT_TEAM = 8V2UX22888;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -685,7 +691,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dela.Dela;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oneagency.Dela;
 				PRODUCT_NAME = Dela;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -699,7 +705,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LBV7BKB3S9;
+				DEVELOPMENT_TEAM = 8V2UX22888;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
@@ -707,7 +713,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.dela.Dela;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oneagency.Dela;
 				PRODUCT_NAME = Dela;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
