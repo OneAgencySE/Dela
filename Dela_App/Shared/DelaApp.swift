@@ -11,7 +11,17 @@ import SwiftUI
 struct DelaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+			TabView {
+				FeedView().tabItem {
+					Image(systemName: "1.circle.fill")
+					Text("Feed")
+				}
+
+				ContentView().tabItem {
+					Image(systemName: "1.square.fill")
+					Text("Content")
+				}
+			}
         }
     }
 }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5107637325B04E7100B82F7F /* FeedArticle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5107637225B04E7100B82F7F /* FeedArticle.swift */; };
 		512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66A25B0471C00B1E06B /* feed.pb.swift */; };
 		512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66A25B0471C00B1E06B /* feed.pb.swift */; };
 		512EA67225B0471C00B1E06B /* blob.pb.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66B25B0471C00B1E06B /* blob.pb.swift */; };
@@ -19,6 +20,12 @@
 		512EA67925B0471C00B1E06B /* feed.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66E25B0471C00B1E06B /* feed.grpc.swift */; };
 		512EA67A25B0471C00B1E06B /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66F25B0471C00B1E06B /* blob.grpc.swift */; };
 		512EA67B25B0471C00B1E06B /* blob.grpc.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA66F25B0471C00B1E06B /* blob.grpc.swift */; };
+		512EA68725B0483100B1E06B /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA68625B0483100B1E06B /* FeedView.swift */; };
+		512EA68825B0483100B1E06B /* FeedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA68625B0483100B1E06B /* FeedView.swift */; };
+		512EA68E25B0485100B1E06B /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA68D25B0485100B1E06B /* FeedViewModel.swift */; };
+		512EA68F25B0485100B1E06B /* FeedViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA68D25B0485100B1E06B /* FeedViewModel.swift */; };
+		512EA69525B048AB00B1E06B /* FeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA69425B048AB00B1E06B /* FeedClient.swift */; };
+		512EA69625B048AB00B1E06B /* FeedClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 512EA69425B048AB00B1E06B /* FeedClient.swift */; };
 		513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE09B258BADB20030F21A /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE099258BADB20030F21A /* ContentViewModel.swift */; };
 		513AE0A1258BAE480030F21A /* GreeterClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 513AE0A0258BAE480030F21A /* GreeterClient.swift */; };
@@ -69,12 +76,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5107637225B04E7100B82F7F /* FeedArticle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedArticle.swift; sourceTree = "<group>"; };
 		512EA66A25B0471C00B1E06B /* feed.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.pb.swift; sourceTree = "<group>"; };
 		512EA66B25B0471C00B1E06B /* blob.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.pb.swift; sourceTree = "<group>"; };
 		512EA66C25B0471C00B1E06B /* helloworld.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.grpc.swift; sourceTree = "<group>"; };
 		512EA66D25B0471C00B1E06B /* helloworld.pb.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = helloworld.pb.swift; sourceTree = "<group>"; };
 		512EA66E25B0471C00B1E06B /* feed.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = feed.grpc.swift; sourceTree = "<group>"; };
 		512EA66F25B0471C00B1E06B /* blob.grpc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = blob.grpc.swift; sourceTree = "<group>"; };
+		512EA68625B0483100B1E06B /* FeedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedView.swift; sourceTree = "<group>"; };
+		512EA68D25B0485100B1E06B /* FeedViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedViewModel.swift; sourceTree = "<group>"; };
+		512EA69425B048AB00B1E06B /* FeedClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedClient.swift; sourceTree = "<group>"; };
 		513AE099258BADB20030F21A /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		513AE0A0258BAE480030F21A /* GreeterClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreeterClient.swift; sourceTree = "<group>"; };
 		51AF093125B0360F00B0ABA9 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = Dela_App/Scripts; sourceTree = "<group>"; };
@@ -154,6 +165,24 @@
 			path = GenGrpcClient;
 			sourceTree = "<group>";
 		};
+		512EA68025B0480C00B1E06B /* FeedView */ = {
+			isa = PBXGroup;
+			children = (
+				512EA68625B0483100B1E06B /* FeedView.swift */,
+				512EA68D25B0485100B1E06B /* FeedViewModel.swift */,
+			);
+			path = FeedView;
+			sourceTree = "<group>";
+		};
+		512EA68125B0481500B1E06B /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				512EA68025B0480C00B1E06B /* FeedView */,
+				8A97B2CB25AF123500373D76 /* ContentView */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 		8A8153A625A89BDB0070D440 /* Project */ = {
 			isa = PBXGroup;
 			children = (
@@ -174,6 +203,7 @@
 			children = (
 				8A97B2BD25AF0BEA00373D76 /* DownloadedBlob.swift */,
 				8A97B2D925AF15DC00373D76 /* BlobInfo.swift */,
+				5107637225B04E7100B82F7F /* FeedArticle.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -212,8 +242,8 @@
 		8AB8B3AE258B885B00D89F15 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				512EA68125B0481500B1E06B /* Views */,
 				8A97B2D425AF128100373D76 /* Lib */,
-				8A97B2CB25AF123500373D76 /* ContentView */,
 				8A97B2BC25AF0BDA00373D76 /* Models */,
 				8AE1F598258CFC8100CD6D01 /* Clients */,
 				8AB8B3AF258B885B00D89F15 /* DelaApp.swift */,
@@ -276,6 +306,7 @@
 			children = (
 				513AE0A0258BAE480030F21A /* GreeterClient.swift */,
 				8AE1F599258CFC9900CD6D01 /* BlobClient.swift */,
+				512EA69425B048AB00B1E06B /* FeedClient.swift */,
 			);
 			path = Clients;
 			sourceTree = "<group>";
@@ -288,10 +319,10 @@
 			buildConfigurationList = 8AB8B3E0258B885D00D89F15 /* Build configuration list for PBXNativeTarget "Dela (iOS)" */;
 			buildPhases = (
 				8A9AB266258B9A5D001974E2 /* Generate gRPC Client */,
+				8A81538625A83C300070D440 /* SwiftLint */,
 				8AB8B3B2258B885D00D89F15 /* Sources */,
 				8AB8B3B3258B885D00D89F15 /* Frameworks */,
 				8AB8B3B4258B885D00D89F15 /* Resources */,
-				8A81538625A83C300070D440 /* SwiftLint */,
 			);
 			buildRules = (
 			);
@@ -491,16 +522,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				512EA68E25B0485100B1E06B /* FeedViewModel.swift in Sources */,
 				512EA67425B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				8AE1F59A258CFC9900CD6D01 /* BlobClient.swift in Sources */,
 				8A97B2BE25AF0BEA00373D76 /* DownloadedBlob.swift in Sources */,
 				8A262AFB25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
+				5107637325B04E7100B82F7F /* FeedArticle.swift in Sources */,
+				512EA69525B048AB00B1E06B /* FeedClient.swift in Sources */,
 				512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */,
 				8A97B2DA25AF15DC00373D76 /* BlobInfo.swift in Sources */,
 				512EA67225B0471C00B1E06B /* blob.pb.swift in Sources */,
 				512EA67825B0471C00B1E06B /* feed.grpc.swift in Sources */,
 				512EA67A25B0471C00B1E06B /* blob.grpc.swift in Sources */,
+				512EA68725B0483100B1E06B /* FeedView.swift in Sources */,
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				512EA67625B0471C00B1E06B /* helloworld.pb.swift in Sources */,
 				51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */,
@@ -516,13 +551,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */,
+				512EA68F25B0485100B1E06B /* FeedViewModel.swift in Sources */,
 				8A262AFC25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */,
+				512EA69625B048AB00B1E06B /* FeedClient.swift in Sources */,
 				513AE0A2258BAE480030F21A /* GreeterClient.swift in Sources */,
 				512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,
+				512EA68825B0483100B1E06B /* FeedView.swift in Sources */,
 				512EA67B25B0471C00B1E06B /* blob.grpc.swift in Sources */,
 				512EA67925B0471C00B1E06B /* feed.grpc.swift in Sources */,
 				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,

@@ -1,6 +1,6 @@
 # https://github.com/realm/SwiftLint
 excluded:
- - Shared/GenGrpcClient
+ - Shared/Lib/GenGrpcClient
 
 disabled_rules:
  - switch_case_alignment
