@@ -4,11 +4,20 @@ version = "0.1.0"
 authors = ["Alexander Herlin <alexander.herlin@outlook.com>", "Joacim Nidén <jocke@niden.se>"]
 edition = "2018"
 
+
+[workspace]
+members = [ ".", "services" ]
+
+[[test]]
+name = "integration"
+path = "tests/lib.rs"
+
 [dependencies]
+services = { path="./services" }
+
 tonic = "0.3"
 prost = "0.6"
-tokio = { version = "0.2", features = ["macros","rt-threaded", "fs"] }
-uuid = { version = "0.8", features = ["v4"] }
+tokio = { version = "0.2", features = ["macros","rt-threaded"] }
 dotenv = "0.15.0"
 tracing = "0.1"
 tracing-subscriber = "0.2"

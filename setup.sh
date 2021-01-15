@@ -1,5 +1,14 @@
 #!/bin/sh
 
+echo "To run mongoDB we use docker, this is however not needed if you want your own setup"
+
+if brew ls --versions openssl > /dev/null; then
+     echo "Openssl is installed!"
+else
+     echo "Installing Openssl..."
+     brew install openssl
+fi
+
 if brew ls --versions swiftlint > /dev/null; then
      echo "Swiftlint is installed!"
 else
@@ -46,3 +55,9 @@ else
      echo 'TEST_JPEG=test_img.jpeg\nUPLOAD_PATH=Upload\nSERVER_ADDR=0.0.0.0:50051' > ./Dela_Backend/.env
 fi
 
+if [ ! -d "./Dela_Backend/certs" ]; then
+    echo "Setting up self signed certificates"
+    mkdir ./Dela_Backend/certs
+    openssl req -x509 -newkey rsa:4096 -nodes -keyout ./Dela_Backend/certs/key.pem -out ./Dela_Backend/certs/cert.pem -days 365 -subj '/CN=localhost'
+    openssl rsa -in ./Dela_Backend/certs/key.pem -out ./Dela_Backend/certs/nopass.pem
+fi

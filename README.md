@@ -31,7 +31,7 @@ Things it adds: protobuf + grpc-swift and it generates the client for initial se
 ./setup
 ```
 
-After running the setup, double check your `Dela_App -> Shared -> local.xcconfig`
+After running the setup, double check your `Dela_App -> local.xcconfig`
 
 ### Dev
 
@@ -40,9 +40,13 @@ After installing the requirements and you've run the setup script.
 This is how you run the server from terminal:
 
 ```bash
-cd Dela.Backend
+cd Dela_Backend
+docker-compose -f stack.yml up -d
 cargo run
 ```
+
+Docker is not needed, however it is convenient! 
+the stack.yml file sets up the backend dependencies. Have a look a t http://localhost:8081/ for the DB viewer.
 
 If you want to develop the server, you'll know how 🥸
 
@@ -51,3 +55,5 @@ To run the app, use `xcode` and ... 🥸
 #### Tips
 
 Use `rust-analyzers` that you can find for vscode and other editors, it's awsome
+
+

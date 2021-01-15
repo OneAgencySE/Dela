@@ -1,1 +1,4 @@
 **/target
+**/certs
+**/cobertura.xml
+**/tarpaulin-report.html
