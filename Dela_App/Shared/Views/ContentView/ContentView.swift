@@ -15,20 +15,13 @@ struct ContentView: View {
 
     var body: some View {
 		VStack {
-            Button("Test Connection") {
-                viewModel.send()
-            }
-            if let greeting = viewModel.greeting {
-                Text("\(greeting)")
-            }
-
 			Button("Select image") {
 				openImageSelector.toggle()
 			}
 
-            Button("Download") {
+            Button("Download image!") {
                 viewModel.didPressDownload()
-            }
+            }.disabled(viewModel.uploadedImage == nil)
 
 			viewModel.downloadedImage.map { image in
 				LazyVStack {

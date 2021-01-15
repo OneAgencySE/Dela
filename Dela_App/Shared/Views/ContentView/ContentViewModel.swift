@@ -11,13 +11,11 @@ import UIKit
 
 class ContentViewModel: ObservableObject {
 
-	@Published var greeting: String?
 	@Published var downloadedImage: DownloadedBlob?
 	@Published var uploadedImage: (Data, String)?
 
 	private var imageData: Data?
 
-	private let greeterClient = GreeterClient.shared
 	private let blobClient = BlobClient.shared
 
     private var downloadCancellable: AnyCancellable?
@@ -74,13 +72,9 @@ class ContentViewModel: ObservableObject {
 	}
 
     func didPressDownload() {
-        let number = Int.random(in: 0...2)
-        let files = ["0bc0e53e-0175-4238-8729-0db1ae8f9fc0.jpeg",
-                     "5c5c2fc8-a9d5-4272-86b9-05e7952ada9b.jpeg",
-                     "30dec707-bead-4f64-b43a-531ec06fa22b.jpeg"]
-		print(files[number])
-        downloadPublisher.send(files[number])
-
+        if let image = self.uploadedImage {
+            downloadPublisher.send(image.1)
+        }
     }
 
     func didPressUpload(data: Data?) {
@@ -89,15 +83,6 @@ class ContentViewModel: ObservableObject {
         }
 
         uploadPublisher.send(image)
-    }
-
-    func send() {
-        switch greeterClient.hello("I said Hi") {
-            case .success(let message):
-                greeting = message
-            case .failure(let failure):
-                greeting = failure.localizedDescription
-        }
     }
 
 }

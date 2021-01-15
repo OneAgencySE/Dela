@@ -7,26 +7,17 @@
 
 import Foundation
 import GRPC
-import NIO
 import Combine
 
 class BlobClient {
 
     private let client: Blob_BlobHandlerClient
-    private let channel: ClientConnection
-    private let group: MultiThreadedEventLoopGroup
 
 	static var shared = BlobClient()
 
     init() {
-        group = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        channel = ClientConnection.insecure(group: group)
-            .withConnectionReestablishment(enabled: false)
-            .connect(host: InfoKey.apiUrl.value, port: Int(InfoKey.apiPort.value) ?? 0)
-        client = Blob_BlobHandlerClient(channel: channel)
-
-        print("Adress: \(InfoKey.apiUrl.value):\(Int(InfoKey.apiPort.value) ?? 0)")
-        print("Connection Status=>:\(channel.connectivity.state)")
+        let remote = RemoteChannel.shared
+        client = Blob_BlobHandlerClient(channel: remote.clientConnection, defaultCallOptions: remote.defaultCallOptions)
     }
 
     func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {

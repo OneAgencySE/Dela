@@ -26,7 +26,14 @@ class FeedViewModel: ObservableObject {
 			feedClient.stream(startFresh: value)
 		}
 		.receive(on: DispatchQueue.main)
-		.sink(receiveCompletion: { _ in }, receiveValue: { [unowned self] _ in
+		.sink(receiveCompletion: { completion in
+            switch completion {
+                case .finished:
+                    print("The stream is closed")
+                case .failure(let error):
+                    print("Fatal: ", error)
+            }
+        }, receiveValue: { [unowned self] _ in
 			self.startFresh.send(false)
 		})
 	}

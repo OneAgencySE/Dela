@@ -1,7 +1,5 @@
 use dotenv::dotenv;
-use providers::{
-    BlobHandlerServer, BlobProvider, FeedHandlerServer, FeedProvider, GreeterServer, MyGreeter,
-};
+use providers::{BlobHandlerServer, BlobProvider, FeedHandlerServer, FeedProvider};
 use tonic::transport::Server;
 
 use tracing::Level;
@@ -17,15 +15,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
 
     let settings = init_settings();
-
-    let greeter = MyGreeter::default();
     let blob_provider = BlobProvider::new(&settings);
     let feed_service = FeedProvider::default();
 
     Server::builder()
         .add_service(BlobHandlerServer::new(blob_provider))
         .add_service(FeedHandlerServer::new(feed_service))
-        .add_service(GreeterServer::new(greeter))
         .serve(settings.server_addr.parse()?)
         .await?;
 

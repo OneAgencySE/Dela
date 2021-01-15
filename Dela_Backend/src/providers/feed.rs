@@ -23,6 +23,14 @@ impl FeedHandler for FeedProvider {
         request: Request<Streaming<SubRequest>>,
     ) -> Result<Response<Self::SubscribeStream>, tonic::Status> {
         info!("Setting up stream");
+        let m = &request.metadata();
+        let _u = m.get_all("x-user");
+        let _r: String = _u
+            .iter()
+            .map(|c| c.to_str().unwrap().to_string())
+            .take(1)
+            .collect();
+
         let mut stream = request.into_inner();
         let (mut tx, rx) = mpsc::channel(5);
         tokio::spawn(async move {
