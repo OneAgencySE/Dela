@@ -36,6 +36,7 @@ impl BlobService {
         std::fs::read_dir(&self.blob_dir).unwrap();
     }
 
+    /// Creates a blob writer that will write a blob to disk
     pub fn writer(&self) -> BlobWriter {
         BlobWriter::new(&self.blob_dir)
     }
