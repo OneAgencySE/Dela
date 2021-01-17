@@ -29,17 +29,21 @@ mod tests {
         .await
         .unwrap();
 
+        let mut count = 0;
         while let Some(r) = stream.message().await.unwrap() {
             match r.value.unwrap() {
                 Value::Info(i) => println!("Received article: {}", i.article_id),
-                Value::Image(_) => break,
+                Value::Image(image) => {
+                    if image.is_done {
+                        count += 1;
+                        println!("Done!!");
+                    }
+
+                    if count == 5 {
+                        break;
+                    }
+                }
             };
-            tokio::time::delay_for(tokio::time::Duration::from_secs(1)).await;
-            tx.send(SubRequest {
-                state: Some(State::StartFresh(false)),
-            })
-            .await
-            .unwrap();
         }
     }
 }

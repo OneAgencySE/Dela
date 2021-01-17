@@ -10,20 +10,21 @@ import Combine
 
 class FeedViewModel: ObservableObject {
 
+    @Published var images: Set<FeedArticle> = Set<FeedArticle>()
 	private let feedClient = FeedClient.shared
 
 	private var startFreshCancellable: AnyCancellable?
-	private let startFresh = PassthroughSubject<Bool, Never>()
+	private let feedPublisher = PassthroughSubject<FeedRequest, Never>()
 
 	init() {
 		initFeedPublisher()
 	}
 
 	func initFeedPublisher() {
-		startFreshCancellable = startFresh
+		startFreshCancellable = feedPublisher
 		.subscribe(on: DispatchQueue.global())
 		.flatMap { [unowned self] value in
-			feedClient.stream(startFresh: value)
+            feedClient.stream(value)
 		}
 		.receive(on: DispatchQueue.main)
 		.sink(receiveCompletion: { completion in
@@ -33,15 +34,30 @@ class FeedViewModel: ObservableObject {
                 case .failure(let error):
                     print("Fatal: ", error)
             }
-        }, receiveValue: { [unowned self] _ in
-			self.startFresh.send(false)
+        }, receiveValue: { [unowned self] value in
+            print("Got to recieve a value!!", value)
+            images.insert(value)
 		})
 	}
 
 	func getFeed() {
-		startFresh.send(true)
-		startFresh.send(false)
+        // feedPublisher.send(.startFresh(false))
+        self.feedClient.streamTest(.startFresh(false)) {[weak self] value in
+            guard let self = self else { return }
+            print("Got to recieve a value!!", value)
+            DispatchQueue.main.async {
+                self.images.insert(value)
+            }
+        }
 	}
+
+    func watchedArticle(watched: String) {
+        feedPublisher.send(.watchedArticle(watched))
+    }
+
+    func setCount(count: Int) {
+        feedPublisher.send(.count(count))
+    }
 
 	func stopStreaming() {
 		feedClient.stopStreaming()

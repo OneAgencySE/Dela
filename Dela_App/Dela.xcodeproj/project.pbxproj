@@ -41,6 +41,8 @@
 		8A6ACB3125B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */; };
 		8A6ACB3825B1EF4500AE5077 /* RemoteChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */; };
 		8A6ACB3925B1EF4500AE5077 /* RemoteChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */; };
+		8A6ACB4725B1FE4800AE5077 /* FeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */; };
+		8A6ACB4825B1FE4800AE5077 /* FeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */; };
 		8A8153F025A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F125A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F225A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
@@ -97,6 +99,7 @@
 		8A262AFA25ADB10900FD17BC /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityHandler.swift; sourceTree = "<group>"; };
 		8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteChannel.swift; sourceTree = "<group>"; };
+		8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRequest.swift; sourceTree = "<group>"; };
 		8A8153A725A89C4D0070D440 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = SOURCE_ROOT; };
 		8A81541225AC462F0070D440 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
@@ -217,6 +220,7 @@
 				8A97B2BD25AF0BEA00373D76 /* DownloadedBlob.swift */,
 				8A97B2D925AF15DC00373D76 /* BlobInfo.swift */,
 				5107637225B04E7100B82F7F /* FeedArticle.swift */,
+				8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -554,6 +558,7 @@
 				512EA67625B0471C00B1E06B /* helloworld.pb.swift in Sources */,
 				51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */,
 				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
+				8A6ACB4725B1FE4800AE5077 /* FeedRequest.swift in Sources */,
 				8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */,
 			);
@@ -564,6 +569,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8AE1F59B258CFC9900CD6D01 /* BlobClient.swift in Sources */,
+				8A6ACB4825B1FE4800AE5077 /* FeedRequest.swift in Sources */,
 				512EA68F25B0485100B1E06B /* FeedViewModel.swift in Sources */,
 				8A262AFC25ADB10900FD17BC /* Error.swift in Sources */,
 				8AB8B3DB258B885D00D89F15 /* ContentView.swift in Sources */,

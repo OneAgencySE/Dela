@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct FeedArticle {
+struct FeedArticle: Hashable {
 	let articleId: String
 	let likes: Int
 	let comments: Int

@@ -4,6 +4,7 @@ use tokio::{
 };
 use uuid::Uuid;
 
+#[derive(Debug, Clone)]
 pub struct BlobService {
     blob_dir: String,
 }

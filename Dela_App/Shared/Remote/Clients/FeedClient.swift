@@ -22,6 +22,7 @@ class FeedClient {
 	private var state: State = .idle
 
 	static var shared = FeedClient()
+    private let queue = DispatchQueue(label: "thread-streaming")
 
      init() {
         let remote = RemoteChannel.shared
@@ -29,7 +30,7 @@ class FeedClient {
         client = Feed_FeedHandlerClient(channel: remote.clientConnection, defaultCallOptions: remote.defaultCallOptions)
 	}
 
-	func stream(startFresh: Bool = true) -> AnyPublisher<FeedArticle, UserInfoError> {
+	func stream(_ req: FeedRequest) -> AnyPublisher<FeedArticle, UserInfoError> {
 
 		Future<FeedArticle, UserInfoError> { [unowned self] promise in
 			switch self.state {
@@ -38,15 +39,15 @@ class FeedClient {
 					let call = self.client.subscribe { response in
 						switch response.value {
 							case .info(let article):
-								print(article)
 								feedResponse.info.articleID = article.articleID
 								feedResponse.info.comments = article.comments
 								feedResponse.info.likes = article.likes
 
 							case .image(let image):
-								print("image: ", image)
-								if feedResponse.image.isDone {
+
+								if image.isDone {
 									let article = FeedArticle(response: feedResponse)
+                                    print("done")
 									return promise(.success(article))
 								} else {
 									feedResponse.image.chunkData += image.chunkData
@@ -58,26 +59,49 @@ class FeedClient {
                     }
 
 					self.state = .streaming(call)
-
-					let request = Feed_SubRequest.with {
-						$0.startFresh = startFresh
-					}
-
-					call.sendMessage(request, promise: nil)
+					call.sendMessage(buildRequest(req), promise: nil)
 
 				case .streaming(let call):
-
-					// If returning from idle, send...
-
-					let request = Feed_SubRequest.with {
-						$0.startFresh = startFresh
-					}
-
-					call.sendMessage(request, promise: nil)
+					call.sendMessage(buildRequest(req), promise: nil)
 
 			}
 		}.eraseToAnyPublisher()
 	}
+
+    func streamTest(_ req: FeedRequest, completion: ((FeedArticle) -> Void)? = nil) {
+        queue.async { [self] in
+
+            switch self.state {
+                case .idle:
+                    var feedResponse = Feed_SubResponse()
+                    let call = self.client.subscribe { response in
+                        switch response.value {
+                            case .info(let article):
+                                feedResponse.info.articleID = article.articleID
+                                feedResponse.info.comments = article.comments
+                                feedResponse.info.likes = article.likes
+
+                            case .image(let image):
+                                if image.isDone {
+                                    let article = FeedArticle(response: feedResponse)
+                                    completion?(article)
+                                } else {
+                                    feedResponse.image.chunkData += image.chunkData
+                                }
+                            case .none:
+                                print("Noo")
+                        }
+                    }
+
+                    self.state = .streaming(call)
+                    call.sendMessage(buildRequest(req), promise: nil)
+
+                case .streaming(let call):
+                    call.sendMessage(buildRequest(req), promise: nil)
+            }
+
+        }
+    }
 
 	func stopStreaming() {
 		// Send end message to the stream
@@ -90,41 +114,22 @@ class FeedClient {
 		}
 	  }
 
-	func getFeed() -> AnyPublisher<FeedArticle, UserInfoError> {
+    private func buildRequest(_ req: FeedRequest) -> Feed_SubRequest {
 
-		return Future<FeedArticle, UserInfoError> { [unowned self] promise in
-
-			let request = Feed_SubRequest.with {
-				$0.startFresh = true
-			}
-
-			var feedResponse = Feed_SubResponse()
-
-			let bidirectionalStreaming = self.client.subscribe { response in
-
-				switch response.value {
-					case .info(let article):
-						feedResponse.info.articleID = article.articleID
-						feedResponse.info.comments = article.comments
-						feedResponse.info.likes = article.likes
-
-					case .image(let image):
-						if feedResponse.image.isDone {
-							// TODO: Show in UI
-							let article = FeedArticle(response: feedResponse)
-							return promise(.success(article))
-						} else {
-							feedResponse.image.chunkData += image.chunkData
-						}
-
-					default:
-                        break
+        switch req {
+            case .count(let count):
+                return Feed_SubRequest.with {
+                    $0.count = Int32(count)
                 }
-            }
+            case .startFresh(let isRefreshing):
+                return Feed_SubRequest.with {
+                    $0.startFresh = isRefreshing
+                }
+            case .watchedArticle(let watched):
+                return Feed_SubRequest.with {
+                    $0.watchedArticleID = watched
+                }
+        }
 
-			bidirectionalStreaming.sendMessage(request, promise: nil)
-
-		}.eraseToAnyPublisher()
-
-	}
+    }
 }
