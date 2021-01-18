@@ -11,19 +11,22 @@ import Logging
 import NIOHPACK
 import NIO
 
-struct RemoteChannel {
+class RemoteChannel {
 
     let clientConnection: ClientConnection
     let clientConfiguration: ClientConnection.Configuration
     let defaultCallOptions: CallOptions
+    private let group: MultiThreadedEventLoopGroup
 
     static var shared = RemoteChannel()
 
     init() {
+        group = MultiThreadedEventLoopGroup(numberOfThreads: 5)
         clientConfiguration = ClientConnection.Configuration(
             target: .hostAndPort(InfoKey.apiUrl.value, Int(InfoKey.apiPort.value) ?? 0),
-            eventLoopGroup: MultiThreadedEventLoopGroup(numberOfThreads: 1),
+            eventLoopGroup: group,
             connectivityStateDelegate: ConnectivityHandler())
+
         clientConnection = ClientConnection(configuration: clientConfiguration)
         print("Adress: \(InfoKey.apiUrl.value):\(Int(InfoKey.apiPort.value) ?? 0)")
         print("Connection Status=>:\(clientConnection.connectivity.state)")
@@ -36,6 +39,11 @@ struct RemoteChannel {
             requestIDHeader: UUID().uuidString,
             cacheable: false,
             logger: Logger(label: "io.grpc", factory: { _ in SwiftLogNoOpLogHandler() }))
+    }
 
+    deinit {
+        do {
+            try group.syncShutdownGracefully()
+        } catch {}
     }
 }

@@ -9,127 +9,98 @@ import Foundation
 import GRPC
 import Combine
 
-class FeedClient {
+private class FeedClient {
+    static let client = Feed_FeedHandlerClient(
+        channel: RemoteChannel.shared.clientConnection,
+        defaultCallOptions: RemoteChannel.shared.defaultCallOptions)
+}
 
-	enum State {
-		case idle
-		case streaming(BidirectionalStreamingCall<Feed_SubRequest, Feed_SubResponse>)
-	}
+class FeedPublisher: Publisher {
+    typealias Output = FeedResponse
+    typealias Failure = Error
 
-    private var client: Feed_FeedHandlerClient
+    private let client = FeedClient.client
 
-	// Track if we are streaming or not
-	private var state: State = .idle
+    private let request: FeedRequest
 
-	static var shared = FeedClient()
-    private let queue = DispatchQueue(label: "thread-streaming")
+    init(request: FeedRequest) {
+         self.request = request
+    }
 
-     init() {
-        let remote = RemoteChannel.shared
+    func receive<S>(subscriber: S)
+        where S: Subscriber, FeedPublisher.Failure == S.Failure, FeedPublisher.Output == S.Input {
+        let subscription = FeedSubscription(request: request, sub: subscriber, client: client)
+        subscriber.receive(subscription: subscription)
+    }
+ }
 
-        client = Feed_FeedHandlerClient(channel: remote.clientConnection, defaultCallOptions: remote.defaultCallOptions)
-	}
+class FeedSubscription<S: Subscriber>: Subscription where S.Input == FeedResponse, S.Failure == Error {
+    private var state: State = .idle
 
-	func stream(_ req: FeedRequest) -> AnyPublisher<FeedArticle, UserInfoError> {
+    private let client: Feed_FeedHandlerClient
+    private let request: FeedRequest
+    private var subscriber: S?
 
-		Future<FeedArticle, UserInfoError> { [unowned self] promise in
-			switch self.state {
-				case .idle:
-					var feedResponse = Feed_SubResponse()
-					let call = self.client.subscribe { response in
-						switch response.value {
-							case .info(let article):
-								feedResponse.info.articleID = article.articleID
-								feedResponse.info.comments = article.comments
-								feedResponse.info.likes = article.likes
+    init(request: FeedRequest, sub: S, client: Feed_FeedHandlerClient) {
+        self.request = request
+        self.subscriber = sub
+        self.client = client
+        sendRequest()
+    }
 
-							case .image(let image):
+    enum State {
+        case idle
+        case streaming(BidirectionalStreamingCall<Feed_SubRequest, Feed_SubResponse>)
+    }
 
-								if image.isDone {
-									let article = FeedArticle(response: feedResponse)
-                                    print("done")
-									return promise(.success(article))
-								} else {
-									feedResponse.image.chunkData += image.chunkData
-								}
+    func request(_ demand: Subscribers.Demand) {
 
-							default:
-								break
-						}
-                    }
+    }
 
-					self.state = .streaming(call)
-					call.sendMessage(buildRequest(req), promise: nil)
-
-				case .streaming(let call):
-					call.sendMessage(buildRequest(req), promise: nil)
-
-			}
-		}.eraseToAnyPublisher()
-	}
-
-    func streamTest(_ req: FeedRequest, completion: ((FeedArticle) -> Void)? = nil) {
-        queue.async { [self] in
-
-            switch self.state {
-                case .idle:
-                    var feedResponse = Feed_SubResponse()
-                    let call = self.client.subscribe { response in
-                        switch response.value {
-                            case .info(let article):
-                                feedResponse.info.articleID = article.articleID
-                                feedResponse.info.comments = article.comments
-                                feedResponse.info.likes = article.likes
-
-                            case .image(let image):
-                                if image.isDone {
-                                    let article = FeedArticle(response: feedResponse)
-                                    completion?(article)
-                                } else {
-                                    feedResponse.image.chunkData += image.chunkData
-                                }
-                            case .none:
-                                print("Noo")
-                        }
-                    }
-
-                    self.state = .streaming(call)
-                    call.sendMessage(buildRequest(req), promise: nil)
-
-                case .streaming(let call):
-                    call.sendMessage(buildRequest(req), promise: nil)
-            }
-
+    func cancel() {
+        switch self.state {
+            case .idle:
+                return
+            case let .streaming(stream):
+                stream.sendEnd(promise: nil)
+                self.state = .idle
         }
     }
 
-	func stopStreaming() {
-		// Send end message to the stream
-		switch self.state {
-		case .idle:
-		  return
-		case let .streaming(stream):
-		  stream.sendEnd(promise: nil)
-		  self.state = .idle
-		}
-	  }
+    private func sendRequest() {
+        switch state {
+            case .idle:
+                print("idle")
 
-    private func buildRequest(_ req: FeedRequest) -> Feed_SubRequest {
+                var imageBuffer = Data()
+                var articleBuffer: FeedArticle?
 
-        switch req {
-            case .count(let count):
-                return Feed_SubRequest.with {
-                    $0.count = Int32(count)
+                let call = self.client.subscribe { [self] response in
+                    switch response.value {
+                        case .info(let article):
+                            articleBuffer = FeedArticle(article)
+                           _ = subscriber?.receive(.article(articleBuffer!))
+                        case .image(let image):
+                            if image.isDone && articleBuffer?.articleId != nil {
+                                _ = subscriber?.receive(
+                                    .image(FeedImage.init(articleId: articleBuffer!.articleId, image: imageBuffer)))
+                            } else {
+                                imageBuffer.append(image.chunkData)
+                            }
+                        case .none:
+                            print("Noo")
+                    }
+
                 }
-            case .startFresh(let isRefreshing):
-                return Feed_SubRequest.with {
-                    $0.startFresh = isRefreshing
-                }
-            case .watchedArticle(let watched):
-                return Feed_SubRequest.with {
-                    $0.watchedArticleID = watched
-                }
+
+                state = .streaming(call)
+
+                call.sendMessage(request.intoGen(), promise: nil)
+
+            case .streaming(let call):
+                print("Streaming")
+                call.sendMessage(request.intoGen(), promise: nil)
         }
-
     }
+
 }
