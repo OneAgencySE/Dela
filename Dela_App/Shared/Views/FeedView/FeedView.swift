@@ -26,19 +26,22 @@ struct FeedView: View {
                 }
                 Spacer()
             }
-//            ScrollView {
-//                LazyVStack {
-//                    ForEach(viewModel.images, id: \.self) { image in
-//                        KFImage(source: .provider(RawImageDataProvider(data: image.image, cacheKey: image.articleId )))
-//                            .resizable()
-//                            .frame(height: 200)
-//                            .aspectRatio(contentMode: .fit).onTapGesture {
-//                                viewModel.watchedArticle(watched: image.articleId)
-//                            }
-//                        Text(image.articleId )
-//                    }
-//                }
-//            }
+            ScrollView {
+                LazyVStack {
+                    ForEach(Array(viewModel.images), id: \.self) { article in
+
+                        if article.image != nil {
+                            KFImage(source: .provider(RawImageDataProvider(data: article.image!, cacheKey: article.articleId )))
+                                .resizable()
+                                .frame(height: 200)
+                                .aspectRatio(contentMode: .fit).onTapGesture {
+                                    viewModel.watchedArticle(watched: article.articleId)
+                                }
+                        }
+                        Text(article.articleId )
+                    }
+                }
+            }
 
 		}
     }

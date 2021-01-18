@@ -10,37 +10,58 @@ import Combine
 
 class FeedViewModel: ObservableObject {
 
-    @Published var images: Set<FeedArticle> = Set<FeedArticle>()
-	// private let feedClient = FeedClient.shared
+    @Published var images: Set<IHaveNoNameForThis> = Set<IHaveNoNameForThis>()
 
-    private let feedPublisher = PassthroughSubject<FeedRequest, Never>()
-
-    private var cancellable: AnyCancellable?
-    private let publisher = FeedPublisher(request: .startFresh(false))
+	private let feedClient = FeedClient.shared
+    private let feedPublisher = PassthroughSubject<FeedRequest, UserInfoError>()
+    private var cancellableFeed: AnyCancellable?
 
 	init() {
-        cancellable = publisher
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
-            .sink { (completion) in
-                switch completion {
-                    case .finished:
-                        print("Finnished with the feed-stream")
-                    case .failure(let fail):
-                        print("Failure in feed: ", fail)
-
-                }
-            } receiveValue: { (feedResponse) in
-                print("Sinked: ", feedResponse)
-            }
+//        cancellableFeed = feedPublisher
+//            .subscribe(on: DispatchQueue.global())
+//            .receive(on: DispatchQueue.main)
+//            .flatMap { [unowned self] value in
+//
+//                // feedClient.stream(value, )
+//            }
+//            .sink { (completion) in
+//                switch completion {
+//                    case .finished:
+//                        print("Finnished with the feed-stream")
+//                    case .failure(let fail):
+//                        print("Failure in feed: ", fail)
+//
+//                }
+//            } receiveValue: { (feedResponse) in
+//                print("Sinked: ", feedResponse)
+//            }
 	}
 
 	func getFeed() {
-        print("Already doing that")
+        feedClient.stream(.startFresh(true)) { [self] res in
+            DispatchQueue.main.async {
+
+                switch res {
+                    case .article(let article):
+
+                        images.insert(IHaveNoNameForThis(articleId: article.articleId, likes: article.likes, comments: article.comments, image: nil))
+                    case .image(let image):
+                        let found = images.first {value in
+                            value.articleId == image.articleId
+                        }
+
+                        if let article = found {
+                            images.insert(IHaveNoNameForThis(articleId: article.articleId, likes: article.likes, comments: article.comments, image: image.image))
+
+                        }
+                }
+            }
+            print("res: ", res)
+        }
+
 	}
 
     func watchedArticle(watched: String) {
-        
         feedPublisher.send(.watchedArticle(watched))
     }
 
@@ -49,6 +70,6 @@ class FeedViewModel: ObservableObject {
     }
 
 	func stopStreaming() {
-        cancellable?.cancel()
+        cancellableFeed?.cancel()
 	}
 }

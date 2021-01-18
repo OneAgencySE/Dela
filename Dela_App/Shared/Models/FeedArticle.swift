@@ -12,7 +12,7 @@ enum FeedResponse {
     case image(FeedImage)
 }
 
-struct FeedArticle: Hashable {
+struct FeedArticle {
 	let articleId: String
 	let likes: Int
 	let comments: Int
@@ -21,6 +21,13 @@ struct FeedArticle: Hashable {
 struct FeedImage {
     let articleId: String
     let image: Data
+}
+
+struct IHaveNoNameForThis: Hashable {
+    let articleId: String
+    let likes: Int
+    let comments: Int
+    var image: Data?
 }
 
 extension FeedArticle {
