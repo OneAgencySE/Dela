@@ -9,20 +9,18 @@ import Foundation
 import GRPC
 import Combine
 
-class BlobClient {
+class BlobService {
 
-    private let client: Blob_BlobHandlerClient
-
-	static var shared = BlobClient()
+    static let client = Blob_BlobHandlerClient(
+        channel: RemoteChannel.shared.clientConnection,
+        defaultCallOptions: RemoteChannel.shared.defaultCallOptions)
 
     init() {
-        let remote = RemoteChannel.shared
-        client = Blob_BlobHandlerClient(channel: remote.clientConnection, defaultCallOptions: remote.defaultCallOptions)
     }
 
     func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {
         Future<BlobInfo, UserInfoError> { promise in
-            let upload = self.client.upload()
+            let upload = BlobService.client.upload()
 
             let chunks = Array(data)
                 .chunked(into: 1024)
@@ -60,7 +58,7 @@ class BlobClient {
             }
 
             var data = Data()
-            _ = self.client.download(request) { blob in
+            _ = BlobService.client.download(request) { blob in
                 data.append(blob.chunkData)
 
                 if !blob.info.fileName.isEmpty {

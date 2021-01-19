@@ -16,7 +16,7 @@ class ContentViewModel: ObservableObject {
 
 	private var imageData: Data?
 
-	private let blobClient = BlobClient.shared
+    private let blobService = BlobService()
 
     private var downloadCancellable: AnyCancellable?
     private let downloadPublisher = PassthroughSubject<String, Never>()
@@ -34,7 +34,7 @@ class ContentViewModel: ObservableObject {
 
     func initDownloadPublisher() {
         downloadCancellable = downloadPublisher
-            .flatMap { [unowned self] input in blobClient.downBlobPub(blobId: input) }
+            .flatMap { [unowned self] input in blobService.downBlobPub(blobId: input) }
 			.receive(on: DispatchQueue.main)
             .sink { completion in
                 switch completion {
@@ -53,7 +53,7 @@ class ContentViewModel: ObservableObject {
 		uploadCancellable = uploadPublisher
             .flatMap { [unowned self] input -> AnyPublisher<BlobInfo, UserInfoError> in
 				self.imageData = input
-                return self.blobClient.uploadImge(data: input)
+                return self.blobService.uploadImge(data: input)
             }
 			.subscribe(on: DispatchQueue.global())
 			.receive(on: DispatchQueue.main)

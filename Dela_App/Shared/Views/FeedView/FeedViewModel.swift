@@ -12,11 +12,28 @@ class FeedViewModel: ObservableObject {
 
     @Published var articles: [FeedArticle] = Array()
     @Published var images: [FeedImage] = Array()
+    @Published var count = 5
 
     private let feedService = FeedService()
     private var cancellableFeed: AnyCancellable?
 
-	init() {
+    init() {
+        initCancellableFeed()
+
+        _ = $count
+            .subscribe(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .map({value in
+                FeedRequest.count(value)
+            })
+            .sink(receiveValue: { [self] value in
+                print("Change")
+                feedService.sendRequest(value)
+            })
+
+    }
+
+    private func initCancellableFeed() {
         cancellableFeed =
             feedService.subject
             .subscribe(on: DispatchQueue.global())

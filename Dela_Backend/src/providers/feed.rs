@@ -108,14 +108,18 @@ impl FeedHandler for FeedProvider {
                                     .unwrap_or_else(|err| {
                                         error!("Service Error: {}", err);
                                     });
-
-                                    seen.push(file.clone());
                                 }
                                 info!("Done sending file! {}", &file)
                             }
                         }
-                        State::WatchedArticleId(s) => info!("Watched! {}", s), // seen.push(s),
-                        State::Count(c) => count = c as usize,
+                        State::WatchedArticleId(s) => {
+                            info!("Adding to watched: {}", &s);
+                            seen.push(s)
+                        }
+                        State::Count(c) => {
+                            info!("Assigning count: {}", &c);
+                            count = c as usize;
+                        }
                     };
                 }
             }

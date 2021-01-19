@@ -15,6 +15,10 @@ struct FeedView: View {
     var body: some View {
 		VStack {
 
+            Stepper(value: $viewModel.count, in: 0...15, step: 1) {
+                Text("Count: \(viewModel.count)")
+            }
+
             HStack {
                 Spacer()
                 Button("Get some articles") {
@@ -26,6 +30,7 @@ struct FeedView: View {
                 }
                 Spacer()
             }
+
             ScrollView {
                 LazyVStack {
 
