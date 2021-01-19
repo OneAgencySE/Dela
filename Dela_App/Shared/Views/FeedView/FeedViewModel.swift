@@ -70,6 +70,6 @@ class FeedViewModel: ObservableObject {
     }
 
 	func stopStreaming() {
-        cancellableFeed?.cancel()
+		feedService.stopStreaming()
 	}
 }

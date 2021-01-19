@@ -9,7 +9,9 @@ import Foundation
 import GRPC
 
 class ConnectivityHandler: ConnectivityStateDelegate {
+	var onChange: ((ConnectivityState) -> Void)?
     func connectivityStateDidChange(from oldState: ConnectivityState, to newState: ConnectivityState) {
         print("Connection state changed from \(oldState) to \(newState)")
+		onChange?(newState)
     }
 }

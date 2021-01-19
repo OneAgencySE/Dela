@@ -19,7 +19,7 @@ class FeedService {
 
     private var imageCache = [String: Data]()
 
-    private static let client = Feed_FeedHandlerClient(
+	private let client = Feed_FeedHandlerClient(
         channel: RemoteChannel.shared.clientConnection,
         defaultCallOptions: RemoteChannel.shared.defaultCallOptions)
 
@@ -27,21 +27,22 @@ class FeedService {
 
     init() {
         print("New FeedService!!")
-        _ = subject.handleEvents(receiveCancel: {
-            self.stopStreaming()
-        })
+
+		// RemoteChannel.shared.connectivitySubject.
     }
 
     func sendRequest(_ req: FeedRequest) {
         self.stream(req)
     }
 
-    private func stopStreaming() {
+    func stopStreaming() {
         switch self.state {
             case .idle:
                 return
             case let .streaming(stream):
+
                 stream.sendEnd(promise: nil)
+				stream.cancel(promise: nil)
                 self.state = .idle
         }
     }
@@ -51,7 +52,7 @@ class FeedService {
             case .idle:
                 print("idle")
 
-                let call = FeedService.client.subscribe { [self] response in
+                let call = client.subscribe { [self] response in
                     switch response.value {
                         case .info(let article):
                             subject.send((.article(FeedArticle(article))))
