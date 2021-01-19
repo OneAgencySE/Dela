@@ -39,7 +39,7 @@ class ContentViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                     case .failure(let error):
-                        print(error)
+                        print("Failure: ", error)
                     case .finished:
                        print("finished")
                 }
@@ -60,7 +60,7 @@ class ContentViewModel: ObservableObject {
             .sink { completion in
                 switch completion {
                     case .failure(let error):
-                        print(error)
+                        print("Failure: ", error)
                     case .finished:
                         print("finished")
                 }

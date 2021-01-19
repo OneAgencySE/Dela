@@ -7,20 +7,33 @@
 
 import Foundation
 
+enum FeedResponse {
+    case article(FeedArticle)
+    case image(FeedImage)
+}
+
 struct FeedArticle {
 	let articleId: String
 	let likes: Int
 	let comments: Int
-	let image: Data
+}
+
+struct FeedImage {
+    let articleId: String
+    let image: Data
 }
 
 extension FeedArticle {
+    init(_ response: Feed_FeedArticle) {
+        articleId = response.articleID
+        likes = Int(response.likes)
+        comments = Int(response.comments)
+    }
+}
 
-	init(response: Feed_SubResponse) {
-		articleId = response.info.articleID
-		likes = Int(response.info.likes)
-		comments = Int(response.info.comments)
-		image = response.image.chunkData
-	}
-
+extension FeedImage {
+    init(_ response: Feed_FeedImage) {
+        articleId = response.articleID
+        image = response.chunkData
+    }
 }

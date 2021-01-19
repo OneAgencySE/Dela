@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct FeedView: View {
 
@@ -13,12 +14,44 @@ struct FeedView: View {
 
     var body: some View {
 		VStack {
-			Button("Get some articles") {
-				viewModel.getFeed()
-			}
-			Button("Stop streaming") {
-				viewModel.stopStreaming()
-			}
+
+            HStack {
+                Spacer()
+                Button("Get some articles") {
+                    viewModel.getFeed()
+                }
+                Spacer()
+                Button("Stop streaming") {
+                    viewModel.stopStreaming()
+                }
+                Spacer()
+            }
+            ScrollView {
+                LazyVStack {
+
+                        ForEach(viewModel.articles, id: \.articleId) { article in
+                            Divider()
+
+                            if let image = viewModel.images.first { img in
+                                img.articleId == article.articleId
+                            } {
+                                KFImage(source: .provider(
+                                            RawImageDataProvider(data: image.image, cacheKey: article.articleId )))
+                                    .resizable()
+                                    .frame(height: 200)
+                                    .aspectRatio(contentMode: .fit).onTapGesture {
+                                        viewModel.watchedArticle(watched: article.articleId)
+                                    }
+                            }
+
+                            Text(article.articleId )
+                            Text("\(article.comments)")
+                            Text("\(article.likes)" )
+                            Divider()
+                        }
+
+                }
+            }
 		}
     }
 }

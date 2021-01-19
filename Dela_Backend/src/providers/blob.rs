@@ -1,8 +1,9 @@
 use crate::Settings;
 use services::BlobService;
+use services::ServiceError;
 use tokio::sync::mpsc;
 use tonic::{Request, Response, Status, Streaming};
-use tracing::info;
+use tracing::{error, info};
 
 pub mod blob {
     tonic::include_proto!("blob");
@@ -15,10 +16,10 @@ pub struct BlobProvider {
 }
 
 impl BlobProvider {
-    pub fn new(settings: &Settings) -> Self {
-        BlobProvider {
-            blob_service: BlobService::new(settings.upload_path.clone()),
-        }
+    pub fn new(settings: &Settings) -> Result<Self, ServiceError> {
+        Ok(BlobProvider {
+            blob_service: BlobService::new(settings.upload_path.clone())?,
+        })
     }
 }
 
@@ -32,7 +33,13 @@ impl BlobHandler for BlobProvider {
         stream: Request<Streaming<BlobData>>,
     ) -> Result<Response<BlobInfo>, Status> {
         info!("Uploading image to server");
-        let mut blob = self.blob_service.writer().create_blob().await;
+
+        let mut blob = self
+            .blob_service
+            .writer()
+            .create_blob()
+            .await
+            .map_err(map_service_error)?;
 
         let mut file_info: Option<FileInfo> = None;
         let mut s = stream.into_inner();
@@ -40,20 +47,25 @@ impl BlobHandler for BlobProvider {
             if let Some(d) = req.data {
                 match d {
                     Data::Info(info) => file_info = Some(info),
-                    Data::ChunkData(chunk) => blob.append(chunk).await,
+                    Data::ChunkData(chunk) => {
+                        blob.append(chunk).await.map_err(map_service_error)?
+                    }
                 }
             }
         }
 
         match file_info {
             Some(f) => {
-                let blob_id = blob.finalize(&f.extension).await;
+                let blob_id = blob
+                    .finalize(&f.extension)
+                    .await
+                    .map_err(map_service_error)?;
                 info!("Upload finished, file {}", &blob_id);
                 Ok(Response::new(BlobInfo { blob_id }))
             }
             None => {
                 info!("No FileInfo received, aborting");
-                blob.abort().await;
+                blob.abort().await.map_err(map_service_error)?;
                 Err(tonic::Status::aborted("No FileInfo was received!"))
             }
         }
@@ -67,14 +79,23 @@ impl BlobHandler for BlobProvider {
         let blob_id = request.into_inner().blob_id;
         info!("Requested download of: {}", &blob_id);
 
-        let mut reader = self.blob_service.reader(&blob_id).await;
+        let mut reader = self
+            .blob_service
+            .reader(&blob_id)
+            .await
+            .map_err(map_service_error)?;
         tokio::spawn(async move {
-            while let Some(chunk) = reader.read().await {
+            while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
+                error!("Service Error: {}", err);
+                None
+            }) {
                 tx.send(Ok(BlobData {
                     data: Some(Data::ChunkData(chunk)),
                 }))
                 .await
-                .unwrap()
+                .unwrap_or_else(|err| {
+                    error!("Send Error: {}", err);
+                });
             }
 
             tx.send(Ok(BlobData {
@@ -85,11 +106,17 @@ impl BlobHandler for BlobProvider {
                 })),
             }))
             .await
-            .unwrap();
+            .unwrap_or_else(|err| {
+                error!("Send Error: {}", err);
+            });
 
             info!("Download complete: {}", blob_id);
         });
 
         Ok(Response::new(rx))
     }
+}
+
+pub fn map_service_error(se: ServiceError) -> tonic::Status {
+    Status::unavailable(format!("Service error: {}", se))
 }

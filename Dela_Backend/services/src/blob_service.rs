@@ -4,6 +4,9 @@ use tokio::{
 };
 use uuid::Uuid;
 
+use super::ServiceError;
+
+#[derive(Debug, Clone)]
 pub struct BlobService {
     blob_dir: String,
 }
@@ -24,16 +27,17 @@ pub struct BlobStreamReader {
 }
 
 impl BlobService {
-    pub fn new(file_path: String) -> Self {
+    pub fn new(file_path: String) -> Result<Self, ServiceError> {
         let service = BlobService {
             blob_dir: file_path,
         };
-        service.validate_path();
-        service
+        service.validate_path()?;
+        Ok(service)
     }
 
-    fn validate_path(&self) {
-        std::fs::read_dir(&self.blob_dir).unwrap();
+    fn validate_path(&self) -> Result<(), ServiceError> {
+        std::fs::read_dir(&self.blob_dir)?;
+        Ok(())
     }
 
     /// Creates a blob writer that will write a blob to disk
@@ -43,10 +47,10 @@ impl BlobService {
 
     /// Returns a blob reader
     /// It can be used to buffer the file
-    pub async fn reader(&self, blob_id: &str) -> BlobStreamReader {
+    pub async fn reader(&self, blob_id: &str) -> Result<BlobStreamReader, ServiceError> {
         let path = format!("{}/{}", &self.blob_dir, blob_id);
-        let file = tokio::fs::File::open(path).await.unwrap();
-        BlobStreamReader::new(file)
+        let file = tokio::fs::File::open(path).await?;
+        Ok(BlobStreamReader::new(file))
     }
 }
 
@@ -58,40 +62,40 @@ impl<'a> BlobWriter<'a> {
     }
 
     /// Creates a blob reference with an actual file reference
-    pub async fn create_blob(&self) -> Blob<'a> {
+    pub async fn create_blob(&self) -> Result<Blob<'a>, ServiceError> {
         let blob_id = Uuid::new_v4().to_string();
         let path = format!("{}/{}", &self.blob_dir, &blob_id);
-        let file = File::create(&path).await.unwrap();
-        Blob {
+        let file = File::create(&path).await?;
+        Ok(Blob {
             file,
             blob_dir: self.blob_dir,
             blob_id,
-        }
+        })
     }
 }
 
 impl Blob<'_> {
     /// Write bytes to file
-    pub async fn append(&mut self, chunk: Vec<u8>) {
-        self.file.write_all(&chunk).await.unwrap();
+    pub async fn append(&mut self, chunk: Vec<u8>) -> Result<(), ServiceError> {
+        self.file.write_all(&chunk).await?;
+        Ok(())
     }
 
     /// Write the blob to disk and set the correct file extension
     /// returns the final name with the supplied extension
-    pub async fn finalize(mut self, extension: &str) -> String {
-        self.file.sync_all().await.unwrap();
+    pub async fn finalize(mut self, extension: &str) -> Result<String, ServiceError> {
+        self.file.sync_all().await?;
         let path = format!("{}/{}", &self.blob_dir, &self.blob_id);
-        tokio::fs::rename(&path, format!("{}{}", &path, &extension))
-            .await
-            .unwrap();
+        tokio::fs::rename(&path, format!("{}{}", &path, &extension)).await?;
         // Return with the extension
-        format!("{}{}", &self.blob_id, &extension)
+        Ok(format!("{}{}", &self.blob_id, &extension))
     }
 
     /// Delete the blob and clean up
-    pub async fn abort(self) {
+    pub async fn abort(self) -> Result<(), ServiceError> {
         let path = format!("{}/{}", &self.blob_dir, &self.blob_id);
-        tokio::fs::remove_file(&path).await.unwrap();
+        tokio::fs::remove_file(&path).await?;
+        Ok(())
     }
 
     /// Get a blob reader, this will consume the blob and return the reader
@@ -112,19 +116,19 @@ impl BlobStreamReader {
     /// each call will iterate one step further until
     /// the whole file is read
     /// ```
-    ///  let service = BlobService::new("/my_folder".to_string());
-    ///  let reader = service.reader("my_file.jpeg").await;
-    ///  while let Some(chunk) = reader.read().await {
+    ///  let service = BlobService::new("/my_folder".to_string())?;
+    ///  let reader = service.reader("my_file.jpeg").await;?
+    ///  while let Some(chunk) = reader.read().await? {
     ///         assert!(chunk.len() > 0)
     ///  }
     /// ```
-    pub async fn read(&mut self) -> Option<Vec<u8>> {
-        let res = self.stream.read(&mut self.buffer).await.unwrap();
+    pub async fn read(&mut self) -> Result<Option<Vec<u8>>, ServiceError> {
+        let res: usize = self.stream.read(&mut self.buffer).await?;
 
-        if res > 0 {
+        Ok(if res > 0 {
             Some(self.buffer.into())
         } else {
             None
-        }
+        })
     }
 }

@@ -10,40 +10,49 @@ import Combine
 
 class FeedViewModel: ObservableObject {
 
-	private let feedClient = FeedClient.shared
+    @Published var articles: [FeedArticle] = Array()
+    @Published var images: [FeedImage] = Array()
 
-	private var startFreshCancellable: AnyCancellable?
-	private let startFresh = PassthroughSubject<Bool, Never>()
+    private let feedService = FeedService()
+    private var cancellableFeed: AnyCancellable?
 
 	init() {
-		initFeedPublisher()
-	}
-
-	func initFeedPublisher() {
-		startFreshCancellable = startFresh
-		.subscribe(on: DispatchQueue.global())
-		.flatMap { [unowned self] value in
-			feedClient.stream(startFresh: value)
-		}
-		.receive(on: DispatchQueue.main)
-		.sink(receiveCompletion: { completion in
-            switch completion {
-                case .finished:
-                    print("The stream is closed")
-                case .failure(let error):
-                    print("Fatal: ", error)
+        cancellableFeed =
+            feedService.subject
+            .subscribe(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .sink { comletion in
+                switch comletion {
+                    case .finished:
+                        print("End of stream")
+                    case .failure(let err):
+                        print("Error: ", err)
+                }
+            } receiveValue: { [self] response in
+                switch response {
+                    case .article(let article):
+                        print("Article")
+                        articles.append(article)
+                    case .image(let image):
+                        print("Image")
+                        images.append(image)
+                }
             }
-        }, receiveValue: { [unowned self] _ in
-			self.startFresh.send(false)
-		})
-	}
+    }
 
 	func getFeed() {
-		startFresh.send(true)
-		startFresh.send(false)
+        feedService.sendRequest(.startFresh(true))
 	}
 
+    func watchedArticle(watched: String) {
+        feedService.sendRequest(.watchedArticle(watched))
+    }
+
+    func setCount(count: Int) {
+        feedService.sendRequest(.count(count))
+    }
+
 	func stopStreaming() {
-		feedClient.stopStreaming()
+        cancellableFeed?.cancel()
 	}
 }
