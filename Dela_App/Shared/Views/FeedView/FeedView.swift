@@ -28,21 +28,30 @@ struct FeedView: View {
             }
             ScrollView {
                 LazyVStack {
-                    ForEach(Array(viewModel.images), id: \.self) { article in
 
-                        if article.image != nil {
-                            KFImage(source: .provider(RawImageDataProvider(data: article.image!, cacheKey: article.articleId )))
-                                .resizable()
-                                .frame(height: 200)
-                                .aspectRatio(contentMode: .fit).onTapGesture {
-                                    viewModel.watchedArticle(watched: article.articleId)
-                                }
+                        ForEach(viewModel.articles, id: \.articleId) { article in
+                            Divider()
+
+                            if let image = viewModel.images.first { img in
+                                img.articleId == article.articleId
+                            } {
+                                KFImage(source: .provider(
+                                            RawImageDataProvider(data: image.image, cacheKey: article.articleId )))
+                                    .resizable()
+                                    .frame(height: 200)
+                                    .aspectRatio(contentMode: .fit).onTapGesture {
+                                        viewModel.watchedArticle(watched: article.articleId)
+                                    }
+                            }
+
+                            Text(article.articleId )
+                            Text("\(article.comments)")
+                            Text("\(article.likes)" )
+                            Divider()
                         }
-                        Text(article.articleId )
-                    }
+
                 }
             }
-
 		}
     }
 }

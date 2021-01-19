@@ -20,7 +20,7 @@ mod tests {
     impl TestBlobClient {
         async fn new(dst: String, files_path: String) -> Self {
             let client = BlobHandlerClient::connect(dst).await.unwrap();
-            let blob_service = BlobService::new(files_path.clone());
+            let blob_service = BlobService::new(files_path.clone()).unwrap();
             TestBlobClient {
                 client,
                 blob_service,
@@ -37,10 +37,10 @@ mod tests {
                 .await
                 .unwrap();
 
-            let mut reader = self.blob_service.reader(&test_file).await;
+            let mut reader = self.blob_service.reader(&test_file).await.unwrap();
             let mut arr = Vec::new();
 
-            while let Some(chunk) = reader.read().await {
+            while let Some(chunk) = reader.read().await.unwrap() {
                 arr.push(BlobData {
                     data: Some(Data::ChunkData(chunk)),
                 });
@@ -69,18 +69,18 @@ mod tests {
                 .unwrap();
 
             let mut stream = stream.into_inner();
-            let mut blob = self.blob_service.writer().create_blob().await;
+            let mut blob = self.blob_service.writer().create_blob().await.unwrap();
             let mut file_info: Option<FileInfo> = None;
 
             while let Some(req) = stream.message().await.unwrap() {
                 if let Some(d) = req.data {
                     match d {
                         Data::Info(info) => file_info = Some(info),
-                        Data::ChunkData(chunk) => blob.append(chunk).await,
+                        Data::ChunkData(chunk) => blob.append(chunk).await.unwrap(),
                     }
                 }
             }
-            (blob.finalize(".test.jpeg").await, file_info)
+            (blob.finalize(".test.jpeg").await.unwrap(), file_info)
         }
     }
 

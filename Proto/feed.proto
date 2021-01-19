@@ -33,7 +33,8 @@ message SubResponse {
 
 message FeedImage {
     bool is_done = 1;
-    bytes chunk_data = 2;
+    string articleId = 2;
+    bytes chunk_data = 3;
 }
 
 message FeedArticle {

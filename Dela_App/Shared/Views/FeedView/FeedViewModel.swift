@@ -10,63 +10,46 @@ import Combine
 
 class FeedViewModel: ObservableObject {
 
-    @Published var images: Set<IHaveNoNameForThis> = Set<IHaveNoNameForThis>()
+    @Published var articles: [FeedArticle] = Array()
+    @Published var images: [FeedImage] = Array()
 
-	private let feedClient = FeedClient.shared
-    private let feedPublisher = PassthroughSubject<FeedRequest, UserInfoError>()
+    private let feedService = FeedService()
     private var cancellableFeed: AnyCancellable?
 
 	init() {
-//        cancellableFeed = feedPublisher
-//            .subscribe(on: DispatchQueue.global())
-//            .receive(on: DispatchQueue.main)
-//            .flatMap { [unowned self] value in
-//
-//                // feedClient.stream(value, )
-//            }
-//            .sink { (completion) in
-//                switch completion {
-//                    case .finished:
-//                        print("Finnished with the feed-stream")
-//                    case .failure(let fail):
-//                        print("Failure in feed: ", fail)
-//
-//                }
-//            } receiveValue: { (feedResponse) in
-//                print("Sinked: ", feedResponse)
-//            }
-	}
-
-	func getFeed() {
-        feedClient.stream(.startFresh(true)) { [self] res in
-            DispatchQueue.main.async {
-
-                switch res {
+        cancellableFeed =
+            feedService.subject
+            .subscribe(on: DispatchQueue.global())
+            .receive(on: DispatchQueue.main)
+            .sink { comletion in
+                switch comletion {
+                    case .finished:
+                        print("End of stream")
+                    case .failure(let err):
+                        print("Error: ", err)
+                }
+            } receiveValue: { [self] response in
+                switch response {
                     case .article(let article):
-
-                        images.insert(IHaveNoNameForThis(articleId: article.articleId, likes: article.likes, comments: article.comments, image: nil))
+                        print("Article")
+                        articles.append(article)
                     case .image(let image):
-                        let found = images.first {value in
-                            value.articleId == image.articleId
-                        }
-
-                        if let article = found {
-                            images.insert(IHaveNoNameForThis(articleId: article.articleId, likes: article.likes, comments: article.comments, image: image.image))
-
-                        }
+                        print("Image")
+                        images.append(image)
                 }
             }
-            print("res: ", res)
-        }
+    }
 
+	func getFeed() {
+        feedService.sendRequest(.startFresh(true))
 	}
 
     func watchedArticle(watched: String) {
-        feedPublisher.send(.watchedArticle(watched))
+        feedService.sendRequest(.watchedArticle(watched))
     }
 
     func setCount(count: Int) {
-        feedPublisher.send(.count(count))
+        feedService.sendRequest(.count(count))
     }
 
 	func stopStreaming() {

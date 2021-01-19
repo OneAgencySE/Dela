@@ -17,8 +17,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let settings = init_settings();
 
     Server::builder()
-        .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)))
-        .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)))
+        .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
+        .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
         .serve(settings.server_addr.parse()?)
         .await?;
 

@@ -1,9 +1,7 @@
-use std::vec;
-
-use services::BlobService;
+use services::{BlobService, ServiceError};
 use tokio::sync::mpsc;
 use tonic::{Request, Response, Status, Streaming};
-use tracing::info;
+use tracing::{error, info};
 
 pub mod feed {
     tonic::include_proto!("feed");
@@ -22,10 +20,10 @@ pub struct FeedProvider {
 }
 
 impl FeedProvider {
-    pub fn new(settings: &Settings) -> Self {
-        FeedProvider {
-            blob_service: BlobService::new(settings.upload_path.clone()),
-        }
+    pub fn new(settings: &Settings) -> Result<Self, ServiceError> {
+        Ok(FeedProvider {
+            blob_service: BlobService::new(settings.upload_path.clone())?,
+        })
     }
 }
 
@@ -38,13 +36,13 @@ impl FeedHandler for FeedProvider {
         request: Request<Streaming<SubRequest>>,
     ) -> Result<Response<Self::SubscribeStream>, tonic::Status> {
         info!("Setting up stream");
-        let meta = &request.metadata();
-        let user_id: String = meta
-            .get_all("x-user")
-            .iter()
-            .map(|c| c.to_str().unwrap().to_string())
-            .take(1)
-            .collect();
+        // let meta = &request.metadata();
+        // let user_id: String = meta
+        //     .get_all("x-user")
+        //     .iter()
+        //     .map(|c| c.to_str().unwrap().to_string())
+        //     .take(1)
+        //     .collect();
 
         let mut stream = request.into_inner();
         let (mut tx, rx) = mpsc::channel(5);
@@ -65,38 +63,54 @@ impl FeedHandler for FeedProvider {
                                 .collect();
 
                             for file in files {
-                                tx.send(Ok(SubResponse {
-                                    value: Some(Value::Info(FeedArticle {
-                                        article_id: file.clone(),
-                                        comments: 0,
-                                        likes: 5,
-                                    })),
-                                }))
-                                .await
-                                .unwrap();
-
-                                let mut reader = service.reader(&file).await;
-                                while let Some(chunk) = reader.read().await {
+                                if let Ok(mut reader) = service.reader(&file).await {
                                     tx.send(Ok(SubResponse {
-                                        value: Some(Value::Image(FeedImage {
-                                            chunk_data: chunk,
-                                            is_done: false,
+                                        value: Some(Value::Info(FeedArticle {
+                                            article_id: file.clone(),
+                                            comments: 0,
+                                            likes: 5,
                                         })),
                                     }))
                                     .await
-                                    .unwrap();
+                                    .unwrap_or_else(|err| {
+                                        error!("Service Error: {}", err);
+                                    });
+
+                                    while let Some(chunk) =
+                                        reader.read().await.unwrap_or_else(|err| {
+                                            error!("Service Error: {}", err);
+                                            None
+                                        })
+                                    {
+                                        tx.send(Ok(SubResponse {
+                                            value: Some(Value::Image(FeedImage {
+                                                chunk_data: chunk,
+                                                article_id: file.clone(),
+                                                is_done: false,
+                                            })),
+                                        }))
+                                        .await
+                                        .unwrap_or_else(
+                                            |err| {
+                                                error!("Service Error: {}", err);
+                                            },
+                                        );
+                                    }
+
+                                    tx.send(Ok(SubResponse {
+                                        value: Some(Value::Image(FeedImage {
+                                            chunk_data: Vec::new(),
+                                            article_id: file.clone(),
+                                            is_done: true,
+                                        })),
+                                    }))
+                                    .await
+                                    .unwrap_or_else(|err| {
+                                        error!("Service Error: {}", err);
+                                    });
+
+                                    seen.push(file.clone());
                                 }
-
-                                tx.send(Ok(SubResponse {
-                                    value: Some(Value::Image(FeedImage {
-                                        chunk_data: Vec::new(),
-                                        is_done: true,
-                                    })),
-                                }))
-                                .await
-                                .unwrap();
-
-                                seen.push(file.clone());
                                 info!("Done sending file! {}", &file)
                             }
                         }

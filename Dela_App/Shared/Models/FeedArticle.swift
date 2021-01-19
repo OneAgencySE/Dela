@@ -23,18 +23,17 @@ struct FeedImage {
     let image: Data
 }
 
-struct IHaveNoNameForThis: Hashable {
-    let articleId: String
-    let likes: Int
-    let comments: Int
-    var image: Data?
-}
-
 extension FeedArticle {
-
     init(_ response: Feed_FeedArticle) {
         articleId = response.articleID
         likes = Int(response.likes)
         comments = Int(response.comments)
+    }
+}
+
+extension FeedImage {
+    init(_ response: Feed_FeedImage) {
+        articleId = response.articleID
+        image = response.chunkData
     }
 }
