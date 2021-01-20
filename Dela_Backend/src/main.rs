@@ -17,7 +17,6 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Dela Backend is running at: {}", &addr);
 
     Server::builder()
-        .trace_fn(|_| info_span!("----------> Dela backend is running <----------"))
         .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
         .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
         .serve(addr)
