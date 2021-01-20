@@ -49,8 +49,8 @@ mod tests {
             arr.push(BlobData {
                 data: Some(Data::Info(FileInfo {
                     extension: ".jpeg".to_string(),
-                    file_name: "".to_string(),
-                    meta_text: "Smooth".to_string(),
+                    file_name: "".to_string(),       // ignored for now
+                    meta_text: "Smooth".to_string(), // ignored for now
                 })),
             });
 
@@ -84,7 +84,7 @@ mod tests {
         }
     }
 
-    #[tokio::test(core_threads = 1)]
+    #[tokio::test]
     async fn upload_download_works() {
         dotenv().ok();
         let file = "test_img.jpeg";

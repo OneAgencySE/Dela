@@ -83,7 +83,7 @@ impl Blob<'_> {
 
     /// Write the blob to disk and set the correct file extension
     /// returns the final name with the supplied extension
-    pub async fn finalize(mut self, extension: &str) -> Result<String, ServiceError> {
+    pub async fn finalize(self, extension: &str) -> Result<String, ServiceError> {
         self.file.sync_all().await?;
         let path = format!("{}/{}", &self.blob_dir, &self.blob_id);
         tokio::fs::rename(&path, format!("{}{}", &path, &extension)).await?;

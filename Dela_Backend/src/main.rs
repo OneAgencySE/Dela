@@ -2,24 +2,25 @@ use dotenv::dotenv;
 use providers::{BlobHandlerServer, BlobProvider, FeedHandlerServer, FeedProvider};
 use tonic::transport::Server;
 
-use tracing::Level;
-use tracing_subscriber::FmtSubscriber;
+use tracing::{info, info_span};
 
 mod providers;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let subscriber = FmtSubscriber::builder()
-        .with_max_level(Level::INFO)
-        .finish();
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
+    tracing_subscriber::fmt()
+        .with_max_level(tracing::Level::INFO)
+        .init();
 
     let settings = init_settings();
+    let addr = settings.server_addr.parse()?;
+    info!("Dela Backend is running at: {}", &addr);
 
     Server::builder()
+        .trace_fn(|_| info_span!("----------> Dela backend is running <----------"))
         .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
         .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
-        .serve(settings.server_addr.parse()?)
+        .serve(addr)
         .await?;
 
     Ok(())

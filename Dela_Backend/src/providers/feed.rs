@@ -1,5 +1,7 @@
+use async_stream::{stream, try_stream};
+use futures::{Stream, StreamExt};
 use services::{BlobService, ServiceError};
-use tokio::sync::mpsc;
+use std::pin::Pin;
 use tonic::{Request, Response, Status, Streaming};
 use tracing::{error, info};
 
@@ -29,103 +31,92 @@ impl FeedProvider {
 
 #[tonic::async_trait]
 impl FeedHandler for FeedProvider {
-    type SubscribeStream = mpsc::Receiver<Result<SubResponse, Status>>;
+    type SubscribeStream =
+        Pin<Box<dyn Stream<Item = Result<SubResponse, Status>> + Send + Sync + 'static>>;
 
+    #[tracing::instrument]
     async fn subscribe(
         &self,
         request: Request<Streaming<SubRequest>>,
-    ) -> Result<Response<Self::SubscribeStream>, tonic::Status> {
+    ) -> Result<Response<Self::SubscribeStream>, Status> {
         info!("Setting up stream");
-        // let meta = &request.metadata();
-        // let user_id: String = meta
-        //     .get_all("x-user")
-        //     .iter()
-        //     .map(|c| c.to_str().unwrap().to_string())
-        //     .take(1)
-        //     .collect();
-
         let mut stream = request.into_inner();
-        let (mut tx, rx) = mpsc::channel(5);
+
+        // TODO: get rid of this dependency, alt use ARC
         let service = self.blob_service.clone();
 
-        tokio::spawn(async move {
-            let mut seen = Vec::new();
-            let mut count = 5;
-            while let Some(req) = stream.message().await.unwrap_or_default() {
-                if let Some(state) = req.state {
-                    match state {
-                        State::StartFresh(_x) => {
-                            let files: Vec<String> = std::fs::read_dir("Upload")
-                                .unwrap()
-                                .map(|x| x.unwrap().file_name().into_string().unwrap())
-                                .filter(|x| x.ends_with(".jpeg") && !seen.contains(x))
-                                .take(count)
-                                .collect();
+        let output = try_stream! {
+            while let Some(req) = stream.next().await {
+                if let Some(state) = req?.state {
 
-                            for file in files {
-                                if let Ok(mut reader) = service.reader(&file).await {
-                                    tx.send(Ok(SubResponse {
-                                        value: Some(Value::Info(FeedArticle {
-                                            article_id: file.clone(),
-                                            comments: 0,
-                                            likes: 5,
-                                        })),
-                                    }))
-                                    .await
-                                    .unwrap_or_else(|err| {
-                                        error!("Service Error: {}", err);
-                                    });
+                    let feed_stream = stream_test(state, service.clone());
+                    futures_util::pin_mut!(feed_stream); // needed for yield iterations to "lock" memory location
 
-                                    while let Some(chunk) =
-                                        reader.read().await.unwrap_or_else(|err| {
-                                            error!("Service Error: {}", err);
-                                            None
-                                        })
-                                    {
-                                        tx.send(Ok(SubResponse {
-                                            value: Some(Value::Image(FeedImage {
-                                                chunk_data: chunk,
-                                                article_id: file.clone(),
-                                                is_done: false,
-                                            })),
-                                        }))
-                                        .await
-                                        .unwrap_or_else(
-                                            |err| {
-                                                error!("Service Error: {}", err);
-                                            },
-                                        );
-                                    }
-
-                                    tx.send(Ok(SubResponse {
-                                        value: Some(Value::Image(FeedImage {
-                                            chunk_data: Vec::new(),
-                                            article_id: file.clone(),
-                                            is_done: true,
-                                        })),
-                                    }))
-                                    .await
-                                    .unwrap_or_else(|err| {
-                                        error!("Service Error: {}", err);
-                                    });
-                                }
-                                info!("Done sending file! {}", &file)
-                            }
-                        }
-                        State::WatchedArticleId(s) => {
-                            info!("Adding to watched: {}", &s);
-                            seen.push(s)
-                        }
-                        State::Count(c) => {
-                            info!("Assigning count: {}", &c);
-                            count = c as usize;
-                        }
-                    };
+                    for await value in feed_stream {
+                        yield value
+                    }
                 }
             }
-            info!("Stream disconnected")
-        });
+            info!("Stream disconnected");
+        };
 
-        Ok(Response::new(rx))
+        Ok(Response::new(Box::pin(output) as Self::SubscribeStream))
+    }
+}
+
+// TODO: Break out to it's own service and get rid of the fs:: dependency
+fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResponse> {
+    stream! {
+            let mut seen = Box::pin(Vec::new());
+            match state {
+                State::Fetch(count) => {
+                    let files: Vec<String> = std::fs::read_dir("Upload")
+                    .unwrap()
+                    .map(|x| x.unwrap().file_name().into_string().unwrap())
+                    .filter(|x| x.ends_with(".jpeg") && !seen.contains(x))
+                    .take(count as usize)
+                    .collect();
+
+                    println!("Count: {}", count);
+                    for file in files {
+                        if let Ok(mut reader) = service.reader(&file).await {
+                            yield SubResponse {
+                                value: Some(Value::Info(FeedArticle {
+                                article_id: file.clone(),
+                                comments: 0,
+                                likes: 5,
+                            })),
+                        };
+
+                        while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
+                            error!("Service Error: {}", err);
+                            None
+                        }) {
+                            yield SubResponse {
+                                value: Some(Value::Image(FeedImage {
+                                    chunk_data: chunk,
+                                    article_id: file.clone(),
+                                    is_done: false,
+
+                                })),
+                            };
+                        }
+
+                        yield SubResponse {
+                            value: Some(Value::Image(FeedImage {
+                                chunk_data: Vec::new(),
+                                article_id: file.clone(),
+                                is_done: true,
+                            })),
+                        };
+                    }
+                    info!("Done sending file! {}", &file);
+                }
+            }
+            State::WatchedArticleId(s) => {
+                info!("Adding to watched: {}", &s);
+                seen.push(s)
+            }
+        };
     }
 }

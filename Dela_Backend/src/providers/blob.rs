@@ -1,7 +1,9 @@
 use crate::Settings;
+use async_stream::try_stream;
+use futures::Stream;
 use services::BlobService;
 use services::ServiceError;
-use tokio::sync::mpsc;
+use std::pin::Pin;
 use tonic::{Request, Response, Status, Streaming};
 use tracing::{error, info};
 
@@ -11,6 +13,7 @@ pub mod blob {
 pub use blob::blob_handler_server::BlobHandlerServer;
 use blob::{blob_data::Data, blob_handler_server::BlobHandler, BlobData, BlobInfo, FileInfo};
 
+#[derive(Debug)]
 pub struct BlobProvider {
     blob_service: BlobService,
 }
@@ -23,11 +26,81 @@ impl BlobProvider {
     }
 }
 
-/// This helped a lot: https://dev.to/anshulgoyal15/a-beginners-guide-to-grpc-with-rust-3c7o
 #[tonic::async_trait]
 impl BlobHandler for BlobProvider {
-    type DownloadStream = mpsc::Receiver<Result<BlobData, Status>>;
+    type DownloadStream =
+        Pin<Box<dyn Stream<Item = Result<BlobData, Status>> + Send + Sync + 'static>>;
 
+    #[tracing::instrument]
+    async fn download(
+        &self,
+        request: Request<BlobInfo>,
+    ) -> Result<Response<Self::DownloadStream>, Status> {
+        let blob_id = request.into_inner().blob_id;
+        info!("Requested download of: {}", &blob_id);
+        let service = self.blob_service.clone();
+        let output = try_stream! {
+            let mut reader =
+                service.reader(&blob_id)
+                .await
+                .map_err(map_service_error)?;
+
+                // TODO: stream!-ify the blob_service
+            while let Some(chunk) = reader.read().await
+                .unwrap_or_else(|err| { error!("Service Error: {}", err); None })
+            {
+                yield BlobData { data: Some(Data::ChunkData(chunk)), };
+            }
+
+            yield BlobData {
+                data: Some(
+                    Data::Info(
+                        FileInfo {
+                            extension: ".jpeg".to_string(),
+                            file_name: blob_id.to_string(),
+                            meta_text: "Meta text".to_string(),
+                        }
+                    )
+                )
+            };
+        };
+
+        Ok(Response::new(Box::pin(output) as Self::DownloadStream))
+        // tokio::spawn(async move {
+        //     while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
+        //         error!("Service Error: {}", err);
+        //         None
+        //     }) {
+        //         tx.send(Ok(BlobData {
+        //             data: Some(Data::ChunkData(chunk)),
+        //         }))
+        //         .await
+        //         .unwrap_or_else(|err| {
+        //             error!("Send Error: {}", err);
+        //         });
+        //     }
+
+        //     tx.send(Ok(BlobData {
+        //         data: Some(Data::Info(FileInfo {
+        //             extension: ".jpeg".to_string(),
+        //             file_name: blob_id.to_string(),
+        //             meta_text: "Meta text".to_string(),
+        //         })),
+        //     }))
+        //     .await
+        //     .unwrap_or_else(|err| {
+        //         error!("Send Error: {}", err);
+        //     });
+
+        //     info!("Download complete: {}", blob_id);
+        // });
+
+        // Ok(Response::new(Box::pin(
+        //     tokio_stream::wrappers::ReceiverStream::new(rx),
+        // )))
+    }
+
+    #[tracing::instrument]
     async fn upload(
         &self,
         stream: Request<Streaming<BlobData>>,
@@ -69,51 +142,6 @@ impl BlobHandler for BlobProvider {
                 Err(tonic::Status::aborted("No FileInfo was received!"))
             }
         }
-    }
-
-    async fn download(
-        &self,
-        request: Request<BlobInfo>,
-    ) -> Result<Response<Self::DownloadStream>, Status> {
-        let (mut tx, rx) = mpsc::channel(5);
-        let blob_id = request.into_inner().blob_id;
-        info!("Requested download of: {}", &blob_id);
-
-        let mut reader = self
-            .blob_service
-            .reader(&blob_id)
-            .await
-            .map_err(map_service_error)?;
-        tokio::spawn(async move {
-            while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
-                error!("Service Error: {}", err);
-                None
-            }) {
-                tx.send(Ok(BlobData {
-                    data: Some(Data::ChunkData(chunk)),
-                }))
-                .await
-                .unwrap_or_else(|err| {
-                    error!("Send Error: {}", err);
-                });
-            }
-
-            tx.send(Ok(BlobData {
-                data: Some(Data::Info(FileInfo {
-                    extension: ".jpeg".to_string(),
-                    file_name: blob_id.to_string(),
-                    meta_text: "Meta text".to_string(),
-                })),
-            }))
-            .await
-            .unwrap_or_else(|err| {
-                error!("Send Error: {}", err);
-            });
-
-            info!("Download complete: {}", blob_id);
-        });
-
-        Ok(Response::new(rx))
     }
 }
 
