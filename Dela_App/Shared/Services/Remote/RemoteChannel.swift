@@ -32,6 +32,7 @@ class RemoteChannel {
             connectivityStateDelegate: connectivityHandler)
 
         clientConnection = ClientConnection(configuration: clientConfiguration)
+
         print("Adress: \(InfoKey.apiUrl.value):\(Int(InfoKey.apiPort.value) ?? 0)")
         print("Connection Status=>:\(clientConnection.connectivity.state)")
 
@@ -44,8 +45,8 @@ class RemoteChannel {
             cacheable: false,
             logger: Logger(label: "io.grpc", factory: { _ in SwiftLogNoOpLogHandler() }))
 
-		connectivityHandler.onChange = { state in
-			self.connectivitySubject.send(state)
+        connectivityHandler.onChange = { [self] state in
+			connectivitySubject.send(state)
 		}
     }
 

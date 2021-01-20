@@ -9,26 +9,30 @@ import Foundation
 import GRPC
 import Combine
 
-class FeedService {
+final class FeedService: StreamingService {
+
+    private var imageCache = [String: Data]()
+    private var state: State = .idle
+    internal var client: Feed_FeedHandlerClient?
+    let feedResponseSubject = PassthroughSubject<FeedResponse, UserInfoError>()
+
+    init() {
+        self.initClientStateHandler()
+    }
+
     enum State {
         case idle
         case streaming(BidirectionalStreamingCall<Feed_SubRequest, Feed_SubResponse>)
     }
 
-    private var state: State = .idle
+    func renewClient(_ remoteChannel: RemoteChannel) {
+        self.client = Feed_FeedHandlerClient(
+            channel: RemoteChannel.shared.clientConnection,
+            defaultCallOptions: RemoteChannel.shared.defaultCallOptions)
+    }
 
-    private var imageCache = [String: Data]()
-
-	private let client = Feed_FeedHandlerClient(
-        channel: RemoteChannel.shared.clientConnection,
-        defaultCallOptions: RemoteChannel.shared.defaultCallOptions)
-
-    let subject = PassthroughSubject<FeedResponse, UserInfoError>()
-
-    init() {
-        print("New FeedService!!")
-
-		// RemoteChannel.shared.connectivitySubject.
+    func disconnect() {
+        self.state = .idle
     }
 
     func sendRequest(_ req: FeedRequest) {
@@ -52,14 +56,19 @@ class FeedService {
             case .idle:
                 print("idle")
 
-                let call = client.subscribe { [self] response in
+                guard self.client != nil else {
+                    return
+                }
+
+                let call = client!.subscribe { [self] response in
                     switch response.value {
                         case .info(let article):
-                            subject.send((.article(FeedArticle(article))))
+                            feedResponseSubject.send((.article(FeedArticle(article))))
                         case .image(let image):
                             if image.isDone {
                                 if let img = imageCache[image.articleID] {
-                                    subject.send((.image(FeedImage(articleId: image.articleID, image: img))))
+                                    feedResponseSubject.send(
+                                        .image(FeedImage(articleId: image.articleID, image: img)))
                                     imageCache[image.articleID] = nil
                                 }
                             } else {

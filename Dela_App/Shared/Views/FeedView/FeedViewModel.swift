@@ -23,7 +23,7 @@ class FeedViewModel: ObservableObject {
 
     private func initCancellableFeed() {
         cancellableFeed =
-            feedService.subject
+            feedService.feedResponseSubject
             .subscribe(on: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
             .sink { comletion in
@@ -37,7 +37,11 @@ class FeedViewModel: ObservableObject {
                 switch response {
                     case .article(let article):
                         print("Article")
-                        articles.append(article)
+                        if !articles.contains(where: { art in art.articleId == article.articleId }) {
+                            articles.append(article)
+                        } else {
+                            print("Server is sending duplicates")
+                        }
                     case .image(let image):
                         print("Image")
                         images.append(image)
