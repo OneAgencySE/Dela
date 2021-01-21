@@ -8,13 +8,16 @@
 import Foundation
 import GRPC
 import Combine
+import SwiftUI
 
 final class FeedService: StreamingService {
 
     private var imageCache = [String: Data]()
+    private var articleCache = [String: Feed_FeedArticle]()
+
     private var state: State = .idle
     internal var client: Feed_FeedHandlerClient?
-    let feedResponseSubject = PassthroughSubject<FeedResponse, UserInfoError>()
+    let feedResponseSubject = PassthroughSubject<FeedArticle, UserInfoError>()
 
     init() {
         self.initClientStateHandler()
@@ -51,6 +54,23 @@ final class FeedService: StreamingService {
         }
     }
 
+    fileprivate func sendResponse(_ image: (Feed_FeedImage)) {
+        let img =  imageCache[image.articleID]!
+        let art = articleCache[image.articleID]!
+
+        let result = FeedArticle(
+            articleId: art.articleID,
+            likes: Int(art.likes) ,
+            comments: Int(art.comments),
+            image: UIImage(data: img)!)
+
+        feedResponseSubject.send(result)
+
+        // Keep is clean in here
+        imageCache[image.articleID] = nil
+        articleCache[image.articleID] = nil
+    }
+
     private func stream(_ request: FeedRequest) {
         switch state {
             case .idle:
@@ -63,14 +83,20 @@ final class FeedService: StreamingService {
                 let call = client!.subscribe { [self] response in
                     switch response.value {
                         case .info(let article):
-                            feedResponseSubject.send((.article(FeedArticle(article))))
+                            if !articleCache.keys.contains(article.articleID) {
+                                articleCache[article.articleID] = article
+                            } else {
+                                print("Invalid Contract: Duplicate articles")
+                            }
                         case .image(let image):
                             if image.isDone {
-                                if let img = imageCache[image.articleID] {
-                                    feedResponseSubject.send(
-                                        .image(FeedImage(articleId: image.articleID, image: img)))
-                                    imageCache[image.articleID] = nil
+                                guard articleCache.keys.contains(image.articleID) &&
+                                        imageCache.keys.contains(image.articleID) else {
+                                    print("Invalid Contract: Image done before Article")
+                                    return
                                 }
+
+                                sendResponse(image)
                             } else {
                                 if !imageCache.keys.contains(image.articleID) {
                                     imageCache[image.articleID] = Data()

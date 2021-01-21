@@ -62,6 +62,8 @@
 		8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 8AB8B3F1258B8EE700D89F15 /* GRPC */; };
 		8AE1F59A258CFC9900CD6D01 /* BlobService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobService.swift */; };
 		8AE1F59B258CFC9900CD6D01 /* BlobService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobService.swift */; };
+		8AE881DD25B9BB52009EB73A /* FeedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE881DC25B9BB52009EB73A /* FeedCardView.swift */; };
+		8AE881DE25B9BB52009EB73A /* FeedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE881DC25B9BB52009EB73A /* FeedCardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -125,6 +127,7 @@
 		8AB8B3D5258B885D00D89F15 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		8AB8B3D7258B885D00D89F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8AE1F599258CFC9900CD6D01 /* BlobService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobService.swift; sourceTree = "<group>"; };
+		8AE881DC25B9BB52009EB73A /* FeedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +182,7 @@
 			children = (
 				512EA68625B0483100B1E06B /* FeedView.swift */,
 				512EA68D25B0485100B1E06B /* FeedViewModel.swift */,
+				8AE881DC25B9BB52009EB73A /* FeedCardView.swift */,
 			);
 			path = FeedView;
 			sourceTree = "<group>";
@@ -543,6 +547,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				512EA68E25B0485100B1E06B /* FeedViewModel.swift in Sources */,
+				8AE881DD25B9BB52009EB73A /* FeedCardView.swift in Sources */,
 				512EA67425B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				8AE1F59A258CFC9900CD6D01 /* BlobService.swift in Sources */,
 				8A6ACB3825B1EF4500AE5077 /* RemoteChannel.swift in Sources */,
@@ -583,6 +588,7 @@
 				512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */,
 				8A6EDF1A25B8766600D30E88 /* StreamingService.swift in Sources */,
 				512EA69625B048AB00B1E06B /* FeedService.swift in Sources */,
+				8AE881DE25B9BB52009EB73A /* FeedCardView.swift in Sources */,
 				512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,
 				8A6ACB3925B1EF4500AE5077 /* RemoteChannel.swift in Sources */,
