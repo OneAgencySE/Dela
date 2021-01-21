@@ -12,30 +12,18 @@ class FeedViewModel: ObservableObject {
 
     @Published var articles: [FeedArticle] = Array()
     @Published var images: [FeedImage] = Array()
-    @Published var count = 5
+    @Published var count: UInt32 = 5
 
     private let feedService = FeedService()
     private var cancellableFeed: AnyCancellable?
 
     init() {
         initCancellableFeed()
-
-        _ = $count
-            .subscribe(on: DispatchQueue.global())
-            .receive(on: DispatchQueue.main)
-            .map({value in
-                FeedRequest.count(value)
-            })
-            .sink(receiveValue: { [self] value in
-                print("Change")
-                feedService.sendRequest(value)
-            })
-
     }
 
     private func initCancellableFeed() {
         cancellableFeed =
-            feedService.subject
+            feedService.feedResponseSubject
             .subscribe(on: DispatchQueue.global())
             .receive(on: DispatchQueue.main)
             .sink { comletion in
@@ -49,7 +37,11 @@ class FeedViewModel: ObservableObject {
                 switch response {
                     case .article(let article):
                         print("Article")
-                        articles.append(article)
+                        if !articles.contains(where: { art in art.articleId == article.articleId }) {
+                            articles.append(article)
+                        } else {
+                            print("Server is sending duplicates")
+                        }
                     case .image(let image):
                         print("Image")
                         images.append(image)
@@ -58,18 +50,14 @@ class FeedViewModel: ObservableObject {
     }
 
 	func getFeed() {
-        feedService.sendRequest(.startFresh(true))
+        feedService.sendRequest(.fetch(count))
 	}
 
     func watchedArticle(watched: String) {
         feedService.sendRequest(.watchedArticle(watched))
     }
 
-    func setCount(count: Int) {
-        feedService.sendRequest(.count(count))
-    }
-
 	func stopStreaming() {
-        cancellableFeed?.cancel()
+		feedService.stopStreaming()
 	}
 }

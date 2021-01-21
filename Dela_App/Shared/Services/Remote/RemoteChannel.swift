@@ -10,24 +10,29 @@ import GRPC
 import Logging
 import NIOHPACK
 import NIO
+import Combine
 
 class RemoteChannel {
 
     let clientConnection: ClientConnection
     let clientConfiguration: ClientConnection.Configuration
     let defaultCallOptions: CallOptions
+	let connectivitySubject = PassthroughSubject<ConnectivityState, Never>()
     private let group: MultiThreadedEventLoopGroup
 
     static var shared = RemoteChannel()
 
     init() {
+		let connectivityHandler = ConnectivityHandler()
+
         group = MultiThreadedEventLoopGroup(numberOfThreads: 5)
         clientConfiguration = ClientConnection.Configuration(
             target: .hostAndPort(InfoKey.apiUrl.value, Int(InfoKey.apiPort.value) ?? 0),
             eventLoopGroup: group,
-            connectivityStateDelegate: ConnectivityHandler())
+            connectivityStateDelegate: connectivityHandler)
 
         clientConnection = ClientConnection(configuration: clientConfiguration)
+
         print("Adress: \(InfoKey.apiUrl.value):\(Int(InfoKey.apiPort.value) ?? 0)")
         print("Connection Status=>:\(clientConnection.connectivity.state)")
 
@@ -39,6 +44,10 @@ class RemoteChannel {
             requestIDHeader: UUID().uuidString,
             cacheable: false,
             logger: Logger(label: "io.grpc", factory: { _ in SwiftLogNoOpLogHandler() }))
+
+        connectivityHandler.onChange = { [self] state in
+			connectivitySubject.send(state)
+		}
     }
 
     deinit {

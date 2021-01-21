@@ -43,6 +43,8 @@
 		8A6ACB3925B1EF4500AE5077 /* RemoteChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */; };
 		8A6ACB4725B1FE4800AE5077 /* FeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */; };
 		8A6ACB4825B1FE4800AE5077 /* FeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */; };
+		8A6EDF1925B8766600D30E88 /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6EDF1825B8766500D30E88 /* StreamingService.swift */; };
+		8A6EDF1A25B8766600D30E88 /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6EDF1825B8766500D30E88 /* StreamingService.swift */; };
 		8A8153F025A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F125A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A8153F225A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
@@ -100,6 +102,7 @@
 		8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityHandler.swift; sourceTree = "<group>"; };
 		8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteChannel.swift; sourceTree = "<group>"; };
 		8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRequest.swift; sourceTree = "<group>"; };
+		8A6EDF1825B8766500D30E88 /* StreamingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreamingService.swift; sourceTree = "<group>"; };
 		8A8153A725A89C4D0070D440 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = SOURCE_ROOT; };
 		8A8153EF25A8CA220070D440 /* local.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = local.xcconfig; sourceTree = SOURCE_ROOT; };
 		8A81541225AC462F0070D440 /* setup.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = setup.sh; sourceTree = "<group>"; };
@@ -204,6 +207,7 @@
 				8AE1F599258CFC9900CD6D01 /* BlobService.swift */,
 				512EA69425B048AB00B1E06B /* FeedService.swift */,
 				8A144EAF25B7049700458B9B /* Remote */,
+				8A6EDF1825B8766500D30E88 /* StreamingService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -546,6 +550,7 @@
 				8A262AFB25ADB10900FD17BC /* Error.swift in Sources */,
 				8A6ACB3025B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
+				8A6EDF1925B8766600D30E88 /* StreamingService.swift in Sources */,
 				5107637325B04E7100B82F7F /* FeedArticle.swift in Sources */,
 				512EA69525B048AB00B1E06B /* FeedService.swift in Sources */,
 				512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */,
@@ -576,6 +581,7 @@
 				8A6ACB3125B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */,
 				51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */,
+				8A6EDF1A25B8766600D30E88 /* StreamingService.swift in Sources */,
 				512EA69625B048AB00B1E06B /* FeedService.swift in Sources */,
 				512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,

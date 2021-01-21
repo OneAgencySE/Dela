@@ -8,8 +8,7 @@
 import Foundation
 
 enum FeedRequest {
-    case count(Int)
-    case startFresh(Bool)
+    case fetch(UInt32)
     case watchedArticle(String)
 }
 
@@ -17,13 +16,9 @@ extension FeedRequest {
     func intoGen() -> Feed_SubRequest {
 
         switch self {
-            case .count(let count):
+            case .fetch(let count):
                 return Feed_SubRequest.with {
-                    $0.count = Int32(count)
-                }
-            case .startFresh(let isRefreshing):
-                return Feed_SubRequest.with {
-                    $0.startFresh = isRefreshing
+                    $0.fetch = count
                 }
             case .watchedArticle(let watched):
                 return Feed_SubRequest.with {
