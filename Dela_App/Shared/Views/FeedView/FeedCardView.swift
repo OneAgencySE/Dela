@@ -10,14 +10,11 @@ import Combine
 import SwiftUI
 
 struct FeedCardView: View {
-    let article: FeedArticle
-    let index: Int
-    @Binding var activeIndex: Int?
     @State private var dragOffset = CGSize.zero
+    @State private var isFocused: Bool = false
 
-    private func isFocused() -> Bool {
-        activeIndex != nil && activeIndex == index
-    }
+    let article: FeedArticle
+    @Binding var activeArticleId: String?
 
     var body: some View {
         GeometryReader { geometry in
@@ -27,25 +24,25 @@ struct FeedCardView: View {
                         Image(uiImage: self.article.image)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: geometry.size.width, height: self.isFocused() ?
+                            .frame(width: geometry.size.width, height: self.isFocused ?
                                     geometry.size.height * 0.7 :
                                     min(self.article.image.size.height/3, 500))
                             .border(Color(.sRGB,
                                           red: 150/255, green: 150/255,
                                           blue: 150/255, opacity: 0.1),
-                                    width: self.isFocused() ? 0 : 1)
-                            .cornerRadius(self.isFocused() ? 0 + self.dragOffset.height * 0.1 : 15)
+                                    width: self.isFocused ? 0 : 1)
+                            .cornerRadius(self.isFocused ? 0 + self.dragOffset.height * 0.1 : 15)
                             .overlay(
                                 ArticleExcerptView(
                                     comments: self.article.comments,
                                     likes: self.article.likes,
                                     userName: "Carl",
-                                    isShowContent: self.isFocused()
+                                    isShowContent: self.$isFocused
                                 )
-                                .cornerRadius(self.isFocused() ? 0 : 15)
+                                .cornerRadius(self.isFocused ? 0 : 15)
                             )
 
-                        if self.isFocused() {
+                        if self.isFocused {
                             Text("This should be the body!")
                                 .foregroundColor(Color(.darkGray))
                                 .font(.system(.body, design: .rounded))
@@ -58,14 +55,15 @@ struct FeedCardView: View {
                 }
                 .shadow(
                     color: Color(.sRGB, red: 64/255, green: 64/255, blue: 64/255, opacity: 0.3),
-                    radius: self.isFocused() ? 0 : 15)
-                .gesture(self.isFocused() ?
+                    radius: self.isFocused ? 0 : 15)
+
+                .gesture(self.isFocused ?
                             DragGesture()
                             .onChanged({ value in
                                 self.dragOffset = value.translation
 
                                 if value.translation.height > 20 || value.translation.width > 20 {
-                                    self.activeIndex = nil
+                                    self.activeArticleId = nil
                                     self.dragOffset = .zero
                                 }
                             })
@@ -74,16 +72,18 @@ struct FeedCardView: View {
                             })
                     : nil)
 
-                if self.isFocused() {
+                if self.isFocused {
                     HStack {
                         Spacer()
 
-                        Button(action: { self.activeIndex = nil }) {
+                        Button(action: {
+                            self.activeArticleId = nil
+                        }, label: {
                             Image(systemName: "xmark.circle.fill")
                                 .font(.system(size: 26))
                                 .foregroundColor(.white)
                                 .opacity(0.7)
-                        }
+                        })
                     }
                     .padding(.top, 40)
                     .padding(.trailing)
@@ -92,6 +92,9 @@ struct FeedCardView: View {
             }
         }
         .scaleEffect(1-self.dragOffset.height * 0.0018)
+        .onChange(of: activeArticleId) { _ in
+            isFocused = activeArticleId != nil && activeArticleId == self.article.articleId
+        }
     }
 }
 
@@ -100,8 +103,7 @@ struct ArticleExcerptView: View {
     let comments: Int
     let likes: Int
     let userName: String
-
-    let isShowContent: Bool
+    @Binding var isShowContent: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -125,7 +127,7 @@ struct ArticleExcerptView: View {
                                 .lineLimit(2)
                                 .padding(.bottom, 5)
 
-                            if !self.isShowContent {
+                            if self.isShowContent {
                                 // swiftlint:disable line_length
                                 Text("'I wish it need not have happened in my time' said Frodo.\n'So do I' said Gandalf.\n'And so do all who lives to see such times. But that is not for them do decide.\nAll we have to decide is what to do with the time that is given us")
                                     .font(.subheadline)
@@ -149,12 +151,15 @@ struct ArticleExcerptView: View {
 struct FeedCardView_Previews: PreviewProvider {
     static var previews: some View {
         let article = FeedArticle(articleId: "theID", likes: 6, comments: 7, image: UIImage(named: "preview.jpeg")!)
+        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5, image: UIImage(named: "preview.jpeg")!)
+        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9, image: UIImage(named: "preview.jpeg")!)
+
         Group {
-            FeedCardView(article: article, index: 1, activeIndex: .constant(1))
+            FeedCardView(article: article, activeArticleId: .constant("theID"))
 
-            FeedCardView(article: article, index: 2, activeIndex: .constant(1))
+            FeedCardView(article: article1, activeArticleId: .constant("theID"))
 
-            FeedCardView(article: article, index: 3, activeIndex: .constant(1))
+            FeedCardView(article: article2, activeArticleId: .constant("theID"))
         }
     }
 }

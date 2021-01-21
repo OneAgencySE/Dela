@@ -11,13 +11,14 @@ import Combine
 class FeedViewModel: ObservableObject {
 
     @Published var articles: [FeedArticle] = Array()
-    @Published var count: UInt32 = 10
 
-    private let feedService = FeedService()
+    private let count: UInt32 = 10 // Standard, could be something else
+    private let feedService = FeedService.shared
     private var cancellableFeed: AnyCancellable?
 
     init() {
         initCancellableFeed()
+        getFeed()
     }
 
     private func initCancellableFeed() {
@@ -40,6 +41,7 @@ class FeedViewModel: ObservableObject {
     }
 
 	func getFeed() {
+        print("Calling for articles")
         feedService.sendRequest(.fetch(count))
 	}
 

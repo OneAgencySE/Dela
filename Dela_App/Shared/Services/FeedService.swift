@@ -19,6 +19,8 @@ final class FeedService: StreamingService {
     internal var client: Feed_FeedHandlerClient?
     let feedResponseSubject = PassthroughSubject<FeedArticle, UserInfoError>()
 
+    static let shared = FeedService()
+
     init() {
         self.initClientStateHandler()
     }

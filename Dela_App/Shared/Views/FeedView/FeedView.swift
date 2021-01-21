@@ -9,16 +9,11 @@ import SwiftUI
 import Kingfisher
 
 struct FeedView: View {
-	@State var viewModel = FeedViewModel()
-    @State var activeIndex: Int?
+	@ObservedObject var viewModel = FeedViewModel()
+    @State var activeArticleId: String?
 
-    enum ContentMode: Equatable {
-        case list
-        case content(Int)
-    }
-
-    private func isFocused(_ index: Int) -> Bool {
-        self.activeIndex != nil && self.activeIndex == index
+    private func isFocused(_ article: FeedArticle) -> Bool {
+        self.activeArticleId != nil && self.activeArticleId == article.articleId
     }
 
     var body: some View {
@@ -27,44 +22,30 @@ struct FeedView: View {
                 VStack(spacing: 30) {
                     TopBarView()
                         .padding(.horizontal, 20)
-                        .opacity(self.activeIndex == nil ? 1 : 0)
+                        .opacity(self.activeArticleId == nil ? 1 : 0)
 
-                    Stepper(value: $viewModel.count, in: 0...15, step: 1) {
-                        Text("Count: \(viewModel.count)")
-                    }
-                    HStack {
-                        Spacer()
-                        Button("Get some articles") {
-                            viewModel.getFeed()
-                        }
-                        Spacer()
-                        Button("Stop streaming") {
-                            viewModel.stopStreaming()
-                        }
-                        Spacer()
-                    }
+                        ForEach(viewModel.articles, id: \.articleId) { article in
 
-                    LazyVStack {
-
-                        ForEach(viewModel.articles.indices) { index in
                             GeometryReader { innerGeo in
-                                FeedCardView(article: viewModel.articles[index],
-                                             index: index,
-                                             activeIndex: self.$activeIndex)
-                                    .offset(y: self.isFocused(index) ? -innerGeo.frame(in: .global).minY : 0)
-                                    .padding(.horizontal, self.isFocused(index) ? 0 : 20)
-                                    .opacity(self.isFocused(index) ? 0 : 1)
+                                FeedCardView(article: article, activeArticleId: self.$activeArticleId)
+                                    .offset(y: self.isFocused(article) ? -innerGeo.frame(in: .global).minY : 0)
+                                    .padding(.horizontal, self.isFocused(article) ? 0 : 20)
+                                    .opacity(
+                                        self.activeArticleId == nil ||
+                                        self.isFocused(article) ? 1 : 0)
                                     .onTapGesture {
-                                        self.activeIndex = index
+                                        self.activeArticleId = article.articleId
                                     }
                             }
-                            .frame(height: self.isFocused(index) ?
-                                        geometry.size.height + geometry.safeAreaInsets.top + geometry.safeAreaInsets.bottom
-                                : min(self.viewModel.articles[index].image.size.height/3, 500))
+                            .frame(height: self.isFocused(article) ?
+                                    geometry.size.height +
+                                    geometry.safeAreaInsets.top +
+                                    geometry.safeAreaInsets.bottom
+                                : min(article.image.size.height/3, 500))
                             .animation(.interactiveSpring(response: 0.55, dampingFraction: 0.65, blendDuration: 0.1))
                         }
                     }
-                }
+
                 .frame(width: geometry.size.width)
             }
         }
