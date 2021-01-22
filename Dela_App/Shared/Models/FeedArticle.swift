@@ -6,11 +6,10 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct FeedArticle {
 	let articleId: String
 	let likes: Int
 	let comments: Int
-    var image: UIImage
+//    var image: [String] Todo, using articleID for now
 }

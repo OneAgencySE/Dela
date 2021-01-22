@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import Kingfisher
 
 struct FeedCardView: View {
     @State private var dragOffset = CGSize.zero
@@ -21,12 +22,17 @@ struct FeedCardView: View {
             ZStack(alignment: .topTrailing) {
                 ScrollView {
                     VStack(alignment: .leading) {
-                        Image(uiImage: self.article.image)
+
+                        let imgHeight = self.isFocused ?
+                                geometry.size.height * 0.7 : min(1200/3, 500)
+                        let processor = DownsamplingImageProcessor(
+                            size: .init(width: geometry.size.width, height: imgHeight))
+
+                        KFImage(URL(string: self.article.articleId))
+                            .setProcessor(processor)
                             .resizable()
                             .scaledToFill()
-                            .frame(width: geometry.size.width, height: self.isFocused ?
-                                    geometry.size.height * 0.7 :
-                                    min(self.article.image.size.height/3, 500))
+                            .frame(width: geometry.size.width, height: imgHeight)
                             .border(Color(.sRGB,
                                           red: 150/255, green: 150/255,
                                           blue: 150/255, opacity: 0.1),
@@ -130,10 +136,8 @@ struct ArticleExcerptView: View {
                             if self.isShowContent {
                                 // swiftlint:disable line_length
                                 Text("'I wish it need not have happened in my time' said Frodo.\n'So do I' said Gandalf.\n'And so do all who lives to see such times. But that is not for them do decide.\nAll we have to decide is what to do with the time that is given us")
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                                    .minimumScaleFactor(0.1)
-                                    .lineLimit(3)
+                                    .font(.title2)
+                                    .foregroundColor(.gray)
 
                             }
                         }
@@ -150,9 +154,9 @@ struct ArticleExcerptView: View {
 
 struct FeedCardView_Previews: PreviewProvider {
     static var previews: some View {
-        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7, image: UIImage(named: "preview.jpeg")!)
-        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5, image: UIImage(named: "preview.jpeg")!)
-        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9, image: UIImage(named: "preview.jpeg")!)
+        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7)
+        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5)
+        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9)
 
         Group {
             FeedCardView(article: article, activeArticleId: .constant("theID"))

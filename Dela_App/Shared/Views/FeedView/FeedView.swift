@@ -25,27 +25,27 @@ struct FeedView: View {
                         .opacity(self.activeArticleId == nil ? 1 : 0)
 
                         ForEach(viewModel.articles, id: \.articleId) { article in
-
-                            GeometryReader { innerGeo in
-                                FeedCardView(article: article, activeArticleId: self.$activeArticleId)
-                                    .offset(y: self.isFocused(article) ? -innerGeo.frame(in: .global).minY : 0)
-                                    .padding(.horizontal, self.isFocused(article) ? 0 : 20)
-                                    .opacity(
-                                        self.activeArticleId == nil ||
-                                        self.isFocused(article) ? 1 : 0)
-                                    .onTapGesture {
-                                        self.activeArticleId = article.articleId
-                                    }
-                            }
-                            .frame(height: self.isFocused(article) ?
-                                    geometry.size.height +
-                                    geometry.safeAreaInsets.top +
-                                    geometry.safeAreaInsets.bottom
-                                : min(article.image.size.height/3, 500))
-                            .animation(.interactiveSpring(response: 0.55, dampingFraction: 0.65, blendDuration: 0.1))
+                                GeometryReader { innerGeo in
+                                    FeedCardView(article: article, activeArticleId: self.$activeArticleId)
+                                        .offset(y: self.isFocused(article) ? -innerGeo.frame(in: .global).minY : 0)
+                                        .padding(.horizontal, self.isFocused(article) ? 0 : 20)
+                                        .opacity(
+                                            self.activeArticleId == nil ||
+                                            self.isFocused(article) ? 1 : 0)
+                                        .onTapGesture {
+                                            self.activeArticleId = article.articleId
+                                        }
+                                }
+                                .frame(height: self.isFocused(article) ?
+                                        geometry.size.height +
+                                        geometry.safeAreaInsets.top +
+                                        geometry.safeAreaInsets.bottom
+                                    : min(1200/3, 500)) // This should reflect image height?
+                                .animation(
+                                    .interactiveSpring(response: 0.55, dampingFraction: 0.65, blendDuration: 0.1))
                         }
-                    }
 
+                    }
                 .frame(width: geometry.size.width)
             }
         }
@@ -55,8 +55,7 @@ struct FeedView: View {
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
         let view = FeedView()
-        let image = UIImage(named: "preview.jpeg")!
-        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1, image: image))
+        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1))
         return view
     }
 }
