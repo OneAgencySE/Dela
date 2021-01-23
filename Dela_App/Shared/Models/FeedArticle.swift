@@ -11,5 +11,5 @@ struct FeedArticle {
 	let articleId: String
 	let likes: Int
 	let comments: Int
-//    var image: [String] Todo, using articleID for now
+    var image: String = "preview.jpeg"
 }

@@ -28,7 +28,8 @@ struct FeedCardView: View {
                         let processor = DownsamplingImageProcessor(
                             size: .init(width: geometry.size.width, height: imgHeight))
 
-                        KFImage(URL(string: self.article.articleId))
+                        KFImage(URL(string: article.image)!.absoluteURL)
+                            .placeholder({Image("preview.jpeg")})
                             .setProcessor(processor)
                             .resizable()
                             .scaledToFill()
@@ -154,9 +155,9 @@ struct ArticleExcerptView: View {
 
 struct FeedCardView_Previews: PreviewProvider {
     static var previews: some View {
-        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7)
-        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5)
-        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9)
+        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7, image: "preview.jpeg")
+        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5, image: "preview.jpeg")
+        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9, image: "preview.jpeg")
 
         Group {
             FeedCardView(article: article, activeArticleId: .constant("theID"))

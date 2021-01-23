@@ -12,10 +12,8 @@ import Kingfisher
 
 final class FeedService: StreamingService {
 
-    // TODO: This should not be an memory based item, it should store to disk
-    // Perhaps use kingfisher for it
-    private var imageCache: (String, Data)?
-    private var articleCache: Feed_FeedArticle?
+    private var imageCache = [String: (data: Data, isDone: Bool)]()
+    private var articleCache = [String: Feed_FeedArticle]()
 
     private var state: State = .idle
     internal var client: Feed_FeedHandlerClient?
@@ -58,28 +56,30 @@ final class FeedService: StreamingService {
         }
     }
 
-    fileprivate func sendResponse() {
-        guard articleCache != nil || imageCache != nil else {
+    fileprivate func sendResponse(_ aricleId: String) {
+
+        guard articleCache.keys.contains(aricleId) &&
+                imageCache.keys.contains(aricleId) &&
+                imageCache[aricleId]!.isDone else {
             return
         }
 
-        ImageCache.default.storeToDisk(self.imageCache!.1,
-                                       forKey: self.articleCache!.articleID,
+        ImageCache.default.storeToDisk(imageCache[aricleId]!.data,
+                                       forKey: aricleId,
                           processorIdentifier: "FeedServiceCaching",
                           expiration: StorageExpiration.seconds(3600),
                           callbackQueue: .mainCurrentOrAsync) { [self] _ in
 
             let result = FeedArticle(
-                articleId: self.articleCache!.articleID,
-                likes: Int(self.articleCache!.likes) ,
-                comments: Int(self.articleCache!.comments)
+                articleId: aricleId,
+                likes: Int(self.articleCache[aricleId]!.likes) ,
+                comments: Int(self.articleCache[aricleId]!.comments),
+                image: aricleId
             )
 
             feedResponseSubject.send(result)
-
-            // Keep is clean in here
-            imageCache = nil
-            articleCache = nil
+            imageCache[aricleId] = nil
+            articleCache[aricleId] = nil
         }
 
     }
@@ -96,20 +96,18 @@ final class FeedService: StreamingService {
                 let call = client!.subscribe { [self] response in
                     switch response.value {
                         case .info(let article):
-                            articleCache = article
+                            articleCache[article.articleID] = article
+                            sendResponse(article.articleID)
                         case .image(let image):
                             if image.isDone {
-                                guard articleCache != nil else {
-                                    print("Invalid Contract: Image done before Article")
-                                    return
+                                imageCache[image.articleID]?.isDone = true
+                                sendResponse(image.articleID)
+                            } else {
+                                if !imageCache.keys.contains(image.articleID) {
+                                    imageCache[image.articleID] = (Data(), false)
                                 }
 
-                                sendResponse()
-                            } else {
-                                if imageCache == nil {
-                                    imageCache = (image.articleID, Data())
-                                }
-                                imageCache!.1.append(image.chunkData)
+                                imageCache[image.articleID]?.data.append(image.chunkData)
                             }
                         case .none:
                             print("No data")
