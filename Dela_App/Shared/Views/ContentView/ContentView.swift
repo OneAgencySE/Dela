@@ -7,12 +7,23 @@
 
 import SwiftUI
 import Kingfisher
+import PhotosUI
 
 struct ContentView: View {
+    let configuration: PHPickerConfiguration
+    init() {
+        var config = PHPickerConfiguration()
+        config.filter = PHPickerFilter.images
+        config.selectionLimit = 5
+        config.preferredAssetRepresentationMode = .compatible
+        configuration = config
+    }
 
-	@ObservedObject var viewModel = ContentViewModel()
-	@State var openImageSelector = false
+    @ObservedObject var viewModel = ContentViewModel()
+    @State var openImageSelector = false
+    @State var pickedImages: [ImageRef] = Array()
 
+    let imageView = Image("preview.jpeg")
     var body: some View {
 		VStack {
 			Button("Select image") {
@@ -22,6 +33,13 @@ struct ContentView: View {
             Button("Download image!") {
                 viewModel.didPressDownload()
             }.disabled(viewModel.uploadedImage == nil)
+
+            ForEach(Array(zip(pickedImages, pickedImages.indices)), id: \.1) { ref, _ in
+                KFImage(ref.phone.absoluteURL)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 500)
+            }
 
 			viewModel.downloadedImage.map { image in
 				LazyVStack {
@@ -44,10 +62,9 @@ struct ContentView: View {
 			}
 
 		}.sheet(isPresented: $openImageSelector) {
-			ImagePickerView(sourceType: .photoLibrary) { image in
-				viewModel.didPressUpload(data: image.jpegData(compressionQuality: 0.5))
-			}
+            PhotoPicker(configuration: configuration, isPresented: $openImageSelector, pickedImages: $pickedImages)
 		}
+
     }
 }
 

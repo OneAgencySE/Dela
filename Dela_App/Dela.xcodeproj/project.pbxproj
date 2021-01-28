@@ -31,12 +31,12 @@
 		517B1E3825ADCD9400BDA9CA /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 517B1E3725ADCD9400BDA9CA /* Kingfisher */; };
 		51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
 		51BF4B2B258CBBCF0043BD5C /* InfoKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B29258CBBCF0043BD5C /* InfoKey.swift */; };
-		51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
-		51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */; };
 		51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
 		51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C3613225AC739A00C49446 /* Array+Extensions.swift */; };
 		8A262AFB25ADB10900FD17BC /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A262AFA25ADB10900FD17BC /* Error.swift */; };
 		8A262AFC25ADB10900FD17BC /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A262AFA25ADB10900FD17BC /* Error.swift */; };
+		8A649C7E25C04BDE00FA6CCB /* ImageCacheHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A649C7D25C04BDE00FA6CCB /* ImageCacheHandler.swift */; };
+		8A649C7F25C04BDE00FA6CCB /* ImageCacheHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A649C7D25C04BDE00FA6CCB /* ImageCacheHandler.swift */; };
 		8A6ACB3025B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */; };
 		8A6ACB3125B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */; };
 		8A6ACB3825B1EF4500AE5077 /* RemoteChannel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */; };
@@ -45,10 +45,6 @@
 		8A6ACB4825B1FE4800AE5077 /* FeedRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */; };
 		8A6EDF1925B8766600D30E88 /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6EDF1825B8766500D30E88 /* StreamingService.swift */; };
 		8A6EDF1A25B8766600D30E88 /* StreamingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6EDF1825B8766500D30E88 /* StreamingService.swift */; };
-		8A8153F025A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
-		8A8153F125A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
-		8A8153F225A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
-		8A8153F325A8CA220070D440 /* local.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 8A8153EF25A8CA220070D440 /* local.xcconfig */; };
 		8A97B2BE25AF0BEA00373D76 /* DownloadedBlob.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2BD25AF0BEA00373D76 /* DownloadedBlob.swift */; };
 		8A97B2DA25AF15DC00373D76 /* BlobInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A97B2D925AF15DC00373D76 /* BlobInfo.swift */; };
 		8AB8B3CB258B885D00D89F15 /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AB8B3CA258B885D00D89F15 /* Tests_iOS.swift */; };
@@ -62,6 +58,9 @@
 		8AB8B3F2258B8EE700D89F15 /* GRPC in Frameworks */ = {isa = PBXBuildFile; productRef = 8AB8B3F1258B8EE700D89F15 /* GRPC */; };
 		8AE1F59A258CFC9900CD6D01 /* BlobService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobService.swift */; };
 		8AE1F59B258CFC9900CD6D01 /* BlobService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE1F599258CFC9900CD6D01 /* BlobService.swift */; };
+		8AE881DD25B9BB52009EB73A /* FeedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE881DC25B9BB52009EB73A /* FeedCardView.swift */; };
+		8AE881DE25B9BB52009EB73A /* FeedCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AE881DC25B9BB52009EB73A /* FeedCardView.swift */; };
+		8AF558C425BCA2D300E515AD /* PhotoPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AF558C325BCA2D300E515AD /* PhotoPicker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,10 +94,10 @@
 		513AE099258BADB20030F21A /* ContentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewModel.swift; sourceTree = "<group>"; };
 		51AF093125B0360F00B0ABA9 /* Scripts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scripts; path = Dela_App/Scripts; sourceTree = "<group>"; };
 		51BF4B29258CBBCF0043BD5C /* InfoKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoKey.swift; sourceTree = "<group>"; };
-		51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePickerView.swift; sourceTree = "<group>"; };
 		51C3613225AC739A00C49446 /* Array+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Extensions.swift"; sourceTree = "<group>"; };
 		8A262AD225AC7FAA00FD17BC /* Proto */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Proto; sourceTree = "<group>"; };
 		8A262AFA25ADB10900FD17BC /* Error.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
+		8A649C7D25C04BDE00FA6CCB /* ImageCacheHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheHandler.swift; sourceTree = "<group>"; };
 		8A6ACB2F25B1ED9A00AE5077 /* ConnectivityHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectivityHandler.swift; sourceTree = "<group>"; };
 		8A6ACB3725B1EF4500AE5077 /* RemoteChannel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteChannel.swift; sourceTree = "<group>"; };
 		8A6ACB4625B1FE4800AE5077 /* FeedRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedRequest.swift; sourceTree = "<group>"; };
@@ -125,6 +124,8 @@
 		8AB8B3D5258B885D00D89F15 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		8AB8B3D7258B885D00D89F15 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8AE1F599258CFC9900CD6D01 /* BlobService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlobService.swift; sourceTree = "<group>"; };
+		8AE881DC25B9BB52009EB73A /* FeedCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCardView.swift; sourceTree = "<group>"; };
+		8AF558C325BCA2D300E515AD /* PhotoPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoPicker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +180,7 @@
 			children = (
 				512EA68625B0483100B1E06B /* FeedView.swift */,
 				512EA68D25B0485100B1E06B /* FeedViewModel.swift */,
+				8AE881DC25B9BB52009EB73A /* FeedCardView.swift */,
 			);
 			path = FeedView;
 			sourceTree = "<group>";
@@ -188,6 +190,7 @@
 			children = (
 				512EA68025B0480C00B1E06B /* FeedView */,
 				8A97B2CB25AF123500373D76 /* ContentView */,
+				8AF558C325BCA2D300E515AD /* PhotoPicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -251,7 +254,6 @@
 			isa = PBXGroup;
 			children = (
 				512EA66925B0471C00B1E06B /* GenGrpcClient */,
-				51BF4B30258CE11B0043BD5C /* ImagePickerView.swift */,
 			);
 			path = Lib;
 			sourceTree = "<group>";
@@ -277,6 +279,7 @@
 				8A97B2BC25AF0BDA00373D76 /* Models */,
 				8A6ACB3625B1EF2000AE5077 /* Services */,
 				8AB8B3AF258B885B00D89F15 /* DelaApp.swift */,
+				8A649C7D25C04BDE00FA6CCB /* ImageCacheHandler.swift */,
 				8AB8B3B1258B885D00D89F15 /* Assets.xcassets */,
 				51BF4B29258CBBCF0043BD5C /* InfoKey.swift */,
 				51C3613225AC739A00C49446 /* Array+Extensions.swift */,
@@ -417,7 +420,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1220;
-				LastUpgradeCheck = 1230;
+				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					8AB8B3B5258B885D00D89F15 = {
 						CreatedOnToolsVersion = 12.2;
@@ -465,7 +468,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A8153F025A8CA220070D440 /* local.xcconfig in Resources */,
 				8AB8B3DC258B885D00D89F15 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -474,7 +476,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A8153F125A8CA220070D440 /* local.xcconfig in Resources */,
 				8AB8B3DD258B885D00D89F15 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -483,7 +484,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A8153F225A8CA220070D440 /* local.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -491,7 +491,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A8153F325A8CA220070D440 /* local.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -543,14 +542,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				512EA68E25B0485100B1E06B /* FeedViewModel.swift in Sources */,
+				8AE881DD25B9BB52009EB73A /* FeedCardView.swift in Sources */,
 				512EA67425B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				8AE1F59A258CFC9900CD6D01 /* BlobService.swift in Sources */,
 				8A6ACB3825B1EF4500AE5077 /* RemoteChannel.swift in Sources */,
 				8A97B2BE25AF0BEA00373D76 /* DownloadedBlob.swift in Sources */,
 				8A262AFB25ADB10900FD17BC /* Error.swift in Sources */,
 				8A6ACB3025B1ED9A00AE5077 /* ConnectivityHandler.swift in Sources */,
+				8A649C7E25C04BDE00FA6CCB /* ImageCacheHandler.swift in Sources */,
 				8AB8B3DA258B885D00D89F15 /* ContentView.swift in Sources */,
 				8A6EDF1925B8766600D30E88 /* StreamingService.swift in Sources */,
+				8AF558C425BCA2D300E515AD /* PhotoPicker.swift in Sources */,
 				5107637325B04E7100B82F7F /* FeedArticle.swift in Sources */,
 				512EA69525B048AB00B1E06B /* FeedService.swift in Sources */,
 				512EA67025B0471C00B1E06B /* feed.pb.swift in Sources */,
@@ -562,7 +564,6 @@
 				51BF4B2A258CBBCF0043BD5C /* InfoKey.swift in Sources */,
 				512EA67625B0471C00B1E06B /* helloworld.pb.swift in Sources */,
 				51C3613325AC739A00C49446 /* Array+Extensions.swift in Sources */,
-				51BF4B31258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				8A6ACB4725B1FE4800AE5077 /* FeedRequest.swift in Sources */,
 				8AB8B3D8258B885D00D89F15 /* DelaApp.swift in Sources */,
 				513AE09A258BADB20030F21A /* ContentViewModel.swift in Sources */,
@@ -583,13 +584,14 @@
 				512EA67125B0471C00B1E06B /* feed.pb.swift in Sources */,
 				8A6EDF1A25B8766600D30E88 /* StreamingService.swift in Sources */,
 				512EA69625B048AB00B1E06B /* FeedService.swift in Sources */,
+				8A649C7F25C04BDE00FA6CCB /* ImageCacheHandler.swift in Sources */,
+				8AE881DE25B9BB52009EB73A /* FeedCardView.swift in Sources */,
 				512EA67525B0471C00B1E06B /* helloworld.grpc.swift in Sources */,
 				51C3613425AC739A00C49446 /* Array+Extensions.swift in Sources */,
 				8A6ACB3925B1EF4500AE5077 /* RemoteChannel.swift in Sources */,
 				512EA68825B0483100B1E06B /* FeedView.swift in Sources */,
 				512EA67B25B0471C00B1E06B /* blob.grpc.swift in Sources */,
 				512EA67925B0471C00B1E06B /* feed.grpc.swift in Sources */,
-				51BF4B32258CE11B0043BD5C /* ImagePickerView.swift in Sources */,
 				512EA67325B0471C00B1E06B /* blob.pb.swift in Sources */,
 				8AB8B3D9258B885D00D89F15 /* DelaApp.swift in Sources */,
 				512EA67725B0471C00B1E06B /* helloworld.pb.swift in Sources */,

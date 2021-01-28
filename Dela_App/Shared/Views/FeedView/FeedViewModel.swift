@@ -11,10 +11,9 @@ import Combine
 class FeedViewModel: ObservableObject {
 
     @Published var articles: [FeedArticle] = Array()
-    @Published var images: [FeedImage] = Array()
-    @Published var count: UInt32 = 5
 
-    private let feedService = FeedService()
+    private let count: UInt32 = 10 // Standard, could be something else
+    private let feedService = FeedService.shared
     private var cancellableFeed: AnyCancellable?
 
     init() {
@@ -33,23 +32,15 @@ class FeedViewModel: ObservableObject {
                     case .failure(let err):
                         print("Error: ", err)
                 }
-            } receiveValue: { [self] response in
-                switch response {
-                    case .article(let article):
-                        print("Article")
-                        if !articles.contains(where: { art in art.articleId == article.articleId }) {
-                            articles.append(article)
-                        } else {
-                            print("Server is sending duplicates")
-                        }
-                    case .image(let image):
-                        print("Image")
-                        images.append(image)
+            } receiveValue: { [self] article in
+                if !articles.contains(where: { art in art.articleId == article.articleId }) {
+                    articles.append(article)
                 }
             }
     }
 
 	func getFeed() {
+        print("Calling for articles")
         feedService.sendRequest(.fetch(count))
 	}
 

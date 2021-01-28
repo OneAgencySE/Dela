@@ -31,6 +31,8 @@ message FeedImage {
     bool is_done = 1;
     string articleId = 2;
     bytes chunk_data = 3;
+    string file_ext = 4;
+    string file_name = 5;
 }
 
 message FeedArticle {

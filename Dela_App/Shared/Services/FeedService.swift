@@ -8,13 +8,28 @@
 import Foundation
 import GRPC
 import Combine
+import Kingfisher
+import UIKit
 
 final class FeedService: StreamingService {
 
-    private var imageCache = [String: Data]()
+    class StreamCache {
+        var imageCache = [String: Feed_FeedImage]()
+        var articleCache = [String: Feed_FeedArticle]()
+
+        func remove(_ aricleId: String) {
+            imageCache[aricleId] = nil
+            articleCache[aricleId] = nil
+        }
+    }
+
+    private var streamCache = StreamCache()
     private var state: State = .idle
+
     internal var client: Feed_FeedHandlerClient?
-    let feedResponseSubject = PassthroughSubject<FeedResponse, UserInfoError>()
+    let feedResponseSubject = PassthroughSubject<FeedArticle, UserInfoError>()
+
+    static let shared = FeedService()
 
     init() {
         self.initClientStateHandler()
@@ -46,8 +61,32 @@ final class FeedService: StreamingService {
             case let .streaming(stream):
 
                 stream.sendEnd(promise: nil)
-				stream.cancel(promise: nil)
+                stream.cancel(promise: nil)
                 self.state = .idle
+        }
+    }
+
+    fileprivate func sendResponse(_ aricleId: String) {
+        guard streamCache.articleCache.keys.contains(aricleId) &&
+                streamCache.imageCache.keys.contains(aricleId) &&
+                streamCache.imageCache[aricleId]!.isDone else {
+            return
+        }
+
+        let image = streamCache.imageCache[aricleId]!
+        ImageCacheHandler().cacheImage(
+            image: image.chunkData, fileName: image.fileName) { [self] imagePath in
+            let result = FeedArticle(
+                articleId: aricleId,
+                likes: Int(streamCache.articleCache[aricleId]!.likes) ,
+                comments: Int(streamCache.articleCache[aricleId]!.comments),
+                imageUrl: imagePath
+            )
+            streamCache.remove(aricleId)
+
+            DispatchQueue.main.async {
+                feedResponseSubject.send(result)
+            }
         }
     }
 
@@ -61,21 +100,25 @@ final class FeedService: StreamingService {
                 }
 
                 let call = client!.subscribe { [self] response in
+
                     switch response.value {
                         case .info(let article):
-                            feedResponseSubject.send((.article(FeedArticle(article))))
+                            streamCache.articleCache[article.articleID] = article
+                            sendResponse(article.articleID)
                         case .image(let image):
                             if image.isDone {
-                                if let img = imageCache[image.articleID] {
-                                    feedResponseSubject.send(
-                                        .image(FeedImage(articleId: image.articleID, image: img)))
-                                    imageCache[image.articleID] = nil
-                                }
+                                streamCache.imageCache[image.articleID]?.isDone = true
+                                sendResponse(image.articleID)
                             } else {
-                                if !imageCache.keys.contains(image.articleID) {
-                                    imageCache[image.articleID] = Data()
+                                if !streamCache.imageCache.keys.contains(image.articleID) {
+                                    streamCache.imageCache[image.articleID] = Feed_FeedImage.with({
+                                        $0.articleID = image.articleID
+                                        $0.fileExt = image.fileExt
+                                        $0.fileName = image.fileName
+                                    })
                                 }
-                                imageCache[image.articleID]?.append(image.chunkData)
+
+                                streamCache.imageCache[image.articleID]?.chunkData.append(image.chunkData)
                             }
                         case .none:
                             print("No data")

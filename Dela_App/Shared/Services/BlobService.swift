@@ -8,6 +8,8 @@
 import Foundation
 import GRPC
 import Combine
+import SwiftUI
+import Kingfisher
 
 final class BlobService: StreamingService {
     var client: Blob_BlobHandlerClient?
@@ -37,6 +39,14 @@ final class BlobService: StreamingService {
 
     func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {
         Future<BlobInfo, UserInfoError> { [self] promise in
+
+            // migrate to separate image handler
+            let processor = DownsamplingImageProcessor(
+                size: .init(width: CGFloat(1200), height: CGFloat(1200)))
+
+            _ = KF.dataProvider(RawImageDataProvider(data: data, cacheKey: "notSet" ))
+                .appendProcessor(processor)
+                .serialize(as: .JPEG, jpegCompressionQuality: CGFloat(0.7))
 
             guard client != nil else {
                 return
