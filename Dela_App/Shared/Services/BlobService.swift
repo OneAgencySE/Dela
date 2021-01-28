@@ -40,10 +40,11 @@ final class BlobService: StreamingService {
     func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {
         Future<BlobInfo, UserInfoError> { [self] promise in
 
+            // migrate to separate image handler
             let processor = DownsamplingImageProcessor(
                 size: .init(width: CGFloat(1200), height: CGFloat(1200)))
 
-            KF.dataProvider(RawImageDataProvider(data: data, cacheKey: "notSet" ))
+            _ = KF.dataProvider(RawImageDataProvider(data: data, cacheKey: "notSet" ))
                 .appendProcessor(processor)
                 .serialize(as: .JPEG, jpegCompressionQuality: CGFloat(0.7))
 

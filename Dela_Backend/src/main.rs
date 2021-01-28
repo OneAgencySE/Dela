@@ -2,7 +2,7 @@ use dotenv::dotenv;
 use providers::{BlobHandlerServer, BlobProvider, FeedHandlerServer, FeedProvider};
 use tonic::transport::Server;
 
-use tracing::{info, info_span};
+use tracing::info;
 
 mod providers;
 

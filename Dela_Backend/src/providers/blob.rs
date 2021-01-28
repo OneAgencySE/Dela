@@ -66,38 +66,6 @@ impl BlobHandler for BlobProvider {
         };
 
         Ok(Response::new(Box::pin(output) as Self::DownloadStream))
-        // tokio::spawn(async move {
-        //     while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
-        //         error!("Service Error: {}", err);
-        //         None
-        //     }) {
-        //         tx.send(Ok(BlobData {
-        //             data: Some(Data::ChunkData(chunk)),
-        //         }))
-        //         .await
-        //         .unwrap_or_else(|err| {
-        //             error!("Send Error: {}", err);
-        //         });
-        //     }
-
-        //     tx.send(Ok(BlobData {
-        //         data: Some(Data::Info(FileInfo {
-        //             extension: ".jpeg".to_string(),
-        //             file_name: blob_id.to_string(),
-        //             meta_text: "Meta text".to_string(),
-        //         })),
-        //     }))
-        //     .await
-        //     .unwrap_or_else(|err| {
-        //         error!("Send Error: {}", err);
-        //     });
-
-        //     info!("Download complete: {}", blob_id);
-        // });
-
-        // Ok(Response::new(Box::pin(
-        //     tokio_stream::wrappers::ReceiverStream::new(rx),
-        // )))
     }
 
     #[tracing::instrument]

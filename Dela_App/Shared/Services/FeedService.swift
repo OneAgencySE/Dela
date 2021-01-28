@@ -9,13 +9,23 @@ import Foundation
 import GRPC
 import Combine
 import Kingfisher
+import UIKit
 
 final class FeedService: StreamingService {
 
-    private var imageCache = [String: (data: Data, isDone: Bool)]()
-    private var articleCache = [String: Feed_FeedArticle]()
+    class StreamCache {
+        var imageCache = [String: Feed_FeedImage]()
+        var articleCache = [String: Feed_FeedArticle]()
 
+        func remove(_ aricleId: String) {
+            imageCache[aricleId] = nil
+            articleCache[aricleId] = nil
+        }
+    }
+
+    private var streamCache = StreamCache()
     private var state: State = .idle
+
     internal var client: Feed_FeedHandlerClient?
     let feedResponseSubject = PassthroughSubject<FeedArticle, UserInfoError>()
 
@@ -51,37 +61,33 @@ final class FeedService: StreamingService {
             case let .streaming(stream):
 
                 stream.sendEnd(promise: nil)
-				stream.cancel(promise: nil)
+                stream.cancel(promise: nil)
                 self.state = .idle
         }
     }
 
     fileprivate func sendResponse(_ aricleId: String) {
-
-        guard articleCache.keys.contains(aricleId) &&
-                imageCache.keys.contains(aricleId) &&
-                imageCache[aricleId]!.isDone else {
+        guard streamCache.articleCache.keys.contains(aricleId) &&
+                streamCache.imageCache.keys.contains(aricleId) &&
+                streamCache.imageCache[aricleId]!.isDone else {
             return
         }
 
-        ImageCache.default.storeToDisk(imageCache[aricleId]!.data,
-                                       forKey: aricleId,
-                          processorIdentifier: "FeedServiceCaching",
-                          expiration: StorageExpiration.seconds(3600),
-                          callbackQueue: .mainCurrentOrAsync) { [self] _ in
-
+        let image = streamCache.imageCache[aricleId]!
+        ImageCacheHandler().cacheImage(
+            image: image.chunkData, fileName: image.fileName) { [self] imagePath in
             let result = FeedArticle(
                 articleId: aricleId,
-                likes: Int(self.articleCache[aricleId]!.likes) ,
-                comments: Int(self.articleCache[aricleId]!.comments),
-                image: aricleId
+                likes: Int(streamCache.articleCache[aricleId]!.likes) ,
+                comments: Int(streamCache.articleCache[aricleId]!.comments),
+                imageUrl: imagePath
             )
+            streamCache.remove(aricleId)
 
-            feedResponseSubject.send(result)
-            imageCache[aricleId] = nil
-            articleCache[aricleId] = nil
+            DispatchQueue.main.async {
+                feedResponseSubject.send(result)
+            }
         }
-
     }
 
     private func stream(_ request: FeedRequest) {
@@ -94,20 +100,25 @@ final class FeedService: StreamingService {
                 }
 
                 let call = client!.subscribe { [self] response in
+
                     switch response.value {
                         case .info(let article):
-                            articleCache[article.articleID] = article
+                            streamCache.articleCache[article.articleID] = article
                             sendResponse(article.articleID)
                         case .image(let image):
                             if image.isDone {
-                                imageCache[image.articleID]?.isDone = true
+                                streamCache.imageCache[image.articleID]?.isDone = true
                                 sendResponse(image.articleID)
                             } else {
-                                if !imageCache.keys.contains(image.articleID) {
-                                    imageCache[image.articleID] = (Data(), false)
+                                if !streamCache.imageCache.keys.contains(image.articleID) {
+                                    streamCache.imageCache[image.articleID] = Feed_FeedImage.with({
+                                        $0.articleID = image.articleID
+                                        $0.fileExt = image.fileExt
+                                        $0.fileName = image.fileName
+                                    })
                                 }
 
-                                imageCache[image.articleID]?.data.append(image.chunkData)
+                                streamCache.imageCache[image.articleID]?.chunkData.append(image.chunkData)
                             }
                         case .none:
                             print("No data")

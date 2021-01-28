@@ -48,6 +48,10 @@ struct FeedView: View {
                     }
                 .frame(width: geometry.size.width)
             }
+        }.onDisappear {
+            viewModel.stopStreaming()
+        }.onAppear {
+            viewModel.getFeed()
         }
     }
 }
@@ -55,7 +59,7 @@ struct FeedView: View {
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
         let view = FeedView()
-        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1))
+        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1, imageUrl: URL(string: "preview.jpeg")!))
         return view
     }
 }

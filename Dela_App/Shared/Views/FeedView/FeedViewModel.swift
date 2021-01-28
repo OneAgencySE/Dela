@@ -18,7 +18,6 @@ class FeedViewModel: ObservableObject {
 
     init() {
         initCancellableFeed()
-        getFeed()
     }
 
     private func initCancellableFeed() {

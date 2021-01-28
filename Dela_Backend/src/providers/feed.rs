@@ -97,7 +97,8 @@ fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResp
                                     chunk_data: chunk,
                                     article_id: file.clone(),
                                     is_done: false,
-
+                                    file_ext: ".jpeg".to_string(),
+                                    file_name: file.clone()
                                 })),
                             };
                         }
@@ -107,6 +108,8 @@ fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResp
                                 chunk_data: Vec::new(),
                                 article_id: file.clone(),
                                 is_done: true,
+                                file_ext: ".jpeg".to_string(),
+                                file_name: file.clone()
                             })),
                         };
                     }

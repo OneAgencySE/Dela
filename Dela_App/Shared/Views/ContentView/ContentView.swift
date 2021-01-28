@@ -21,7 +21,7 @@ struct ContentView: View {
 
     @ObservedObject var viewModel = ContentViewModel()
     @State var openImageSelector = false
-    @State var pickedImages: [UIImage] = Array()
+    @State var pickedImages: [ImageRef] = Array()
 
     let imageView = Image("preview.jpeg")
     var body: some View {
@@ -34,11 +34,11 @@ struct ContentView: View {
                 viewModel.didPressDownload()
             }.disabled(viewModel.uploadedImage == nil)
 
-            ForEach(Array(zip(pickedImages, pickedImages.indices)), id: \.1) { image, _ in
-                Image(uiImage: image)
+            ForEach(Array(zip(pickedImages, pickedImages.indices)), id: \.1) { ref, _ in
+                KFImage(ref.phone.absoluteURL)
                     .resizable()
-                    .frame(height: 200)
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFill()
+                    .frame(height: 500)
             }
 
 			viewModel.downloadedImage.map { image in
