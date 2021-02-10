@@ -17,6 +17,8 @@ struct ImageRef {
 
 struct ImageCacheHandler {
 
+    public static let `default` = ImageCacheHandler()
+
     let processor = DownsamplingImageProcessor(
         size: .init(width: CGFloat(3840), height: CGFloat(2160)))
 
@@ -31,17 +33,49 @@ struct ImageCacheHandler {
 
     /// Store the originl and create one phone version and one Ipad/full screen version
     func prepareImage(image: KFCrossPlatformImage, fileName: String, completeion: @escaping (ImageRef) -> Void) {
-        
-            /// Make 3 versions of the image!
-            /// cache them, and return
-            let info = KingfisherParsedOptionsInfo(nil)
+        ImageCache.default.store(image, forKey: fileName)
 
-            // info.cacheSerializer = DefaultCacheSerializer.default
+        let phoneImage = image.resize(targetSize: CGSize(width: 100.0, height: 200.0))
+        let phoneName = "phone_\(fileName)"
+        ImageCache.default.store(phoneImage, forKey: phoneName)
 
-            ImageCache.default.store(image,
-                                     forKey: fileName,
-                                     options: info)
+        let webImage = image.resize(targetSize: CGSize(width: 200.0, height: 400.0))
+        let webName = "web_\(fileName)"
+        ImageCache.default.store(webImage, forKey: webName)
 
-        completeion(ImageRef(origninal: URL( string: "sss")!, web: URL( string: "sss")!, phone: URL( string: "sss")!))
+        completeion(ImageRef(
+                        origninal: URL( string: fileName)!,
+                        web: URL( string: webName)!,
+                        phone: URL( string: phoneName)!))
+    }
+
+    func getImage(name: URL, completion: ((Data) -> Void)?) {
+        ImageCache.default.retrieveImage(forKey: name.absoluteString) { res in
+            switch res {
+                case .success(let image):
+                    completion?((image.image?.pngData())!)
+                case .failure(let err):
+                    print("Failed to retreive image \(err)")
+            }
+        }
+    }
+}
+
+extension UIImage {
+    func resize(targetSize: CGSize) -> UIImage {
+        let oldSize = self.size
+        let widthRatio = targetSize.width / oldSize.width
+        let heightRatio = targetSize.height / oldSize.height
+        let newSize = widthRatio > heightRatio ?
+            CGSize(width: oldSize.width * heightRatio, height: oldSize.height * heightRatio) :
+                CGSize(width: oldSize.width * widthRatio, height: oldSize.height * widthRatio)
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        self.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return newImage!
+
     }
 }

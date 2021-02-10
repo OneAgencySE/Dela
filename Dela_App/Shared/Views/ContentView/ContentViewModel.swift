@@ -77,12 +77,20 @@ class ContentViewModel: ObservableObject {
         }
     }
 
-    func didPressUpload(data: Data?) {
-        guard let image = data else {
-            return
-        }
+    func didPressUpload(_ images: [ImageRef]) {
+        images.forEach { img in
+            ImageCacheHandler.default.getImage(name: img.origninal ) { image in
+                self.uploadPublisher.send(image)
+            }
 
-        uploadPublisher.send(image)
+            ImageCacheHandler.default.getImage(name: img.phone ) { image in
+                self.uploadPublisher.send(image)
+            }
+
+            ImageCacheHandler.default.getImage(name: img.web ) { image in
+                self.uploadPublisher.send(image)
+            }
+        }
     }
 
 }

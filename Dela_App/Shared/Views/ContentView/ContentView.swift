@@ -30,9 +30,9 @@ struct ContentView: View {
 				openImageSelector.toggle()
 			}
 
-            Button("Download image!") {
-                viewModel.didPressDownload()
-            }.disabled(viewModel.uploadedImage == nil)
+            Button("Upload images!") {
+                viewModel.didPressUpload(pickedImages)
+            }.disabled(pickedImages.count == 0)
 
             ForEach(Array(zip(pickedImages, pickedImages.indices)), id: \.1) { ref, _ in
                 KFImage(ref.phone.absoluteURL)

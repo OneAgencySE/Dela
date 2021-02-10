@@ -8,7 +8,6 @@
 import Foundation
 import GRPC
 import Combine
-import Kingfisher
 import UIKit
 
 final class FeedService: StreamingService {

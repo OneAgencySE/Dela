@@ -9,7 +9,7 @@ import Foundation
 import GRPC
 import Combine
 import SwiftUI
-import Kingfisher
+
 
 final class BlobService: StreamingService {
     var client: Blob_BlobHandlerClient?
@@ -37,17 +37,8 @@ final class BlobService: StreamingService {
         self.cancellableUpload?.cancel(promise: nil)
     }
 
-    func uploadImge(data: Data) -> AnyPublisher<BlobInfo, UserInfoError> {
+    func uploadImge(data: Data, fileName: String) -> AnyPublisher<BlobInfo, UserInfoError> {
         Future<BlobInfo, UserInfoError> { [self] promise in
-
-            // migrate to separate image handler
-            let processor = DownsamplingImageProcessor(
-                size: .init(width: CGFloat(1200), height: CGFloat(1200)))
-
-            _ = KF.dataProvider(RawImageDataProvider(data: data, cacheKey: "notSet" ))
-                .appendProcessor(processor)
-                .serialize(as: .JPEG, jpegCompressionQuality: CGFloat(0.7))
-
             guard client != nil else {
                 return
             }
@@ -65,9 +56,9 @@ final class BlobService: StreamingService {
 
             let imageInfo = Blob_BlobData.with {
                 $0.info = Blob_FileInfo.with {
-                    $0.extension = ".jpeg"
-                    $0.metaText = "flowa-powa"
-                    $0.fileName = ""
+                    $0.extension = ".png"
+                    $0.metaText = ""
+                    $0.fileName = fileName
                 }
             }
             cancellableUpload?.sendMessage(imageInfo, promise: nil)

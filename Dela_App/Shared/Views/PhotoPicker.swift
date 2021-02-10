@@ -9,7 +9,6 @@ import Foundation
 import SwiftUI
 import UIKit
 import PhotosUI
-import Kingfisher
 
 struct PhotoPicker: UIViewControllerRepresentable {
     let configuration: PHPickerConfiguration
