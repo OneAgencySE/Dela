@@ -31,7 +31,7 @@ struct FeedCardView: View {
 
                         KFImage(article.imageUrl.absoluteURL)
                             .setProcessor(processor)
-                            .placeholder({Image("preview.jpeg")})
+                            .placeholder({Image("preview")})
                             .resizable()
                             .scaledToFill()
                             .frame(width: geometry.size.width, height: imgHeight)
@@ -156,9 +156,9 @@ struct ArticleExcerptView: View {
 
 struct FeedCardView_Previews: PreviewProvider {
     static var previews: some View {
-        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7, imageUrl: URL(string: "preview.jpeg")!)
-        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5, imageUrl: URL(string: "preview.jpeg")!)
-        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9, imageUrl: URL(string: "preview.jpeg")!)
+        let article = FeedArticle(articleId: "theID", likes: 6, comments: 7, imageUrl: URL(string: "preview")!)
+        let article1 = FeedArticle(articleId: "theID1", likes: 8, comments: 5, imageUrl: URL(string: "preview")!)
+        let article2 = FeedArticle(articleId: "theID2", likes: 4, comments: 9, imageUrl: URL(string: "preview")!)
 
         Group {
             FeedCardView(article: article, activeArticleId: .constant("theID"))

@@ -1,6 +1,10 @@
 #!/bin/sh
 
 echo "To run mongoDB we use docker, this is however not needed if you want your own setup"
+if brew ls --versions openssl > /dev/null; then 
+     echo "Brew is used to install apps. Check out the setup.sh if you want to do it manually"
+     return 1;
+fi
 
 if brew ls --versions openssl > /dev/null; then
      echo "Openssl is installed!"
@@ -38,13 +42,14 @@ fi
 mkdir -p ./Dela_App/Shared/GenGrpcClient
 
 cd ./Dela_App
+mkdir -p Shared/Lib/GenGrpcClient
 sh ./Scripts/generateproto.sh
 cd ..
 
 if [[ -f ./Dela_App/local.xcconfig ]]; then 
      echo "Settings file local.xcconfig exists"
 else    
-     echo 'API_URL = <ADDRESS>' > ./Dela_App/local.xcconfig
+     echo 'API_URL = <ADDRESS>\nAPI_PORT = 50051' > ./Dela_App/local.xcconfig
      echo "Be sure to check out the local.xcconfig file"
 fi 
 
@@ -52,6 +57,7 @@ if [[ -f ./Dela_Backend/.env ]]; then
      echo "The backend .env exists"
 else
      echo "Be sure to check out the backend .env file"
+     mkdir -p ./Dela_Backend/Upload
      echo 'TEST_JPEG=test_img.jpeg\nUPLOAD_PATH=Upload\nSERVER_ADDR=0.0.0.0:50051' > ./Dela_Backend/.env
 fi
 

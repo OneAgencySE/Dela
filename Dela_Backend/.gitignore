@@ -2,3 +2,5 @@
 **/certs
 **/cobertura.xml
 **/tarpaulin-report.html
+**/*.jpeg
+**/*.png

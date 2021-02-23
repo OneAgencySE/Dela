@@ -53,7 +53,7 @@ class ContentViewModel: ObservableObject {
 		uploadCancellable = uploadPublisher
             .flatMap { [unowned self] input -> AnyPublisher<BlobInfo, UserInfoError> in
 				self.imageData = input
-                return self.blobService.uploadImge(data: input)
+                return self.blobService.uploadImge(data: input, fileName: "foo.jpeg")
             }
 			.subscribe(on: DispatchQueue.global())
 			.receive(on: DispatchQueue.main)

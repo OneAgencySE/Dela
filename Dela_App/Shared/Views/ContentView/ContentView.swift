@@ -23,7 +23,7 @@ struct ContentView: View {
     @State var openImageSelector = false
     @State var pickedImages: [ImageRef] = Array()
 
-    let imageView = Image("preview.jpeg")
+    let imageView = Image("preview")
     var body: some View {
 		VStack {
 			Button("Select image") {

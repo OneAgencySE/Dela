@@ -9,19 +9,19 @@ mod providers;
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt()
-        .with_max_level(tracing::Level::INFO)
-        .init();
-
+    .with_max_level(tracing::Level::INFO)
+    .init();
+    
     let settings = init_settings();
     let addr = settings.server_addr.parse()?;
     info!("Dela Backend is running at: {}", &addr);
-
+    
     Server::builder()
-        .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
-        .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
-        .serve(addr)
-        .await?;
-
+    .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
+    .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
+    .serve(addr)
+    .await?;
+    
     Ok(())
 }
 

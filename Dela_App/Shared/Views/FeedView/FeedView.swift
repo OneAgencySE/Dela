@@ -59,7 +59,7 @@ struct FeedView: View {
 struct FeedView_Previews: PreviewProvider {
     static var previews: some View {
         let view = FeedView()
-        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1, imageUrl: URL(string: "preview.jpeg")!))
+        view.viewModel.articles.append(FeedArticle(articleId: "TheId", likes: 3, comments: 1, imageUrl: URL(string: "preview")!))
         return view
     }
 }
@@ -80,7 +80,7 @@ struct TopBarView: View {
 
             Spacer()
 
-            AvatarView(image: "preview.jpeg", width: 40, height: 40)
+            AvatarView(image: "preview", width: 40, height: 40)
 
         }
     }
