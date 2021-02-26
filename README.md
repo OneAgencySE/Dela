@@ -45,7 +45,7 @@ docker-compose -f stack.yml up -d
 cargo run
 ```
 
-Docker is not needed, however it is convenient! 
+Docker is not needed, however it is convenient!
 the stack.yml file sets up the backend dependencies. Have a look a t http://localhost:8081/ for the DB viewer.
 
 If you want to develop the server, you'll know how 🥸
@@ -54,6 +54,4 @@ To run the app, use `xcode` and ... 🥸
 
 #### Tips
 
-Use `rust-analyzers` that you can find for vscode and other editors, it's awsome
-
-
+Use `rust-analyzers` that you can find for vscode and other editors, it's awesome

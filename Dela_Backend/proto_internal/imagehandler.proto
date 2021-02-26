@@ -1,0 +1,31 @@
+syntax = "proto3";
+package imageservice;
+
+service ImageService {
+    rpc Upload (stream Image) returns (ImageStatus);
+    rpc Download (ImageInfo) returns (stream Image);
+}
+
+message ImageStatus {
+    string image_id = 1;
+}
+
+message ImageInfo {
+    /// The image will be stored in maximum size of 4k resolution
+    /// Three sizes will be stored
+    enum Quality {
+        phone = 0;
+        web = 1;
+        original = 2;
+        thumbnail = 3;
+    }
+
+    string image_id = 1;
+    Quality quality = 3;
+}
+
+message Image {
+    string extension = 1;
+    bytes chunk_data = 2;
+}
+

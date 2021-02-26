@@ -505,7 +505,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n  swiftlint && swiftlint autocorrect\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "# Since Apple silicon uses rosetta for intel version apps, we need to add \n# this to the path so that xcode can find brew installed apps. \n# works on both intel and m1\nexport PATH=\"$PATH:/opt/homebrew/bin\"\n\n# Type a script or drag a script file from your workspace to insert its path.\nif which swiftlint >/dev/null; then\n  swiftlint && swiftlint autocorrect\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 		8A9AB266258B9A5D001974E2 /* Generate gRPC Client */ = {
 			isa = PBXShellScriptBuildPhase;

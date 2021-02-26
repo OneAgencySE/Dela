@@ -1,0 +1,10 @@
+[package]
+name = "synchronizer"
+version = "0.1.0"
+authors = ["Alexander Herlin <alexander.herlin@outlook.com>"]
+edition = "2018"
+description = "This service listens to a redis queue and updates the database accordingly. It also updates redis records"
+
+[dependencies]
+dotenv = "0.15.0"
+redis = "0.20.0"

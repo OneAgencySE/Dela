@@ -10,7 +10,6 @@ import GRPC
 import Combine
 import SwiftUI
 
-
 final class BlobService: StreamingService {
     var client: Blob_BlobHandlerClient?
 

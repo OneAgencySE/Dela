@@ -35,7 +35,7 @@ struct ContentView: View {
             }.disabled(pickedImages.count == 0)
 
             ForEach(Array(zip(pickedImages, pickedImages.indices)), id: \.1) { ref, _ in
-                KFImage(ref.phone.absoluteURL)
+                KFImage(URL(string: ref.phone))
                     .resizable()
                     .scaledToFill()
                     .frame(height: 500)

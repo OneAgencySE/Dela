@@ -1,13 +1,19 @@
 use dotenv::dotenv;
 use providers::{BlobHandlerServer, BlobProvider, FeedHandlerServer, FeedProvider};
+use resizer::run_resizer;
 use tonic::transport::Server;
 
 use tracing::info;
 
 mod providers;
+mod services;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+    // run_resizer().await?;
+
+
     tracing_subscriber::fmt()
     .with_max_level(tracing::Level::INFO)
     .init();
@@ -17,10 +23,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     info!("Dela Backend is running at: {}", &addr);
     
     Server::builder()
-    .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)?))
-    .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)?))
-    .serve(addr)
-    .await?;
+        .add_service(BlobHandlerServer::new(BlobProvider::new(&settings)))
+        .add_service(FeedHandlerServer::new(FeedProvider::new(&settings)))
+        .serve(addr)
+        .await?;
     
     Ok(())
 }
@@ -29,7 +35,7 @@ fn init_settings() -> Settings {
     dotenv().ok();
     Settings {
         upload_path: dotenv::var("UPLOAD_PATH").expect("Should have UPLOAD_PATH in environment"),
-        server_addr: dotenv::var("SERVER_ADDR").expect("Should have SERVER_ADDR in environment"),
+        server_addr: dotenv::var("DELA_PROV_ADDR").expect("Should have DELA_PROV_ADDR in environment"),
     }
 }
 

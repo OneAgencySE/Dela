@@ -1,12 +1,14 @@
 # docker-compose -f stack.yml up
-version: '3.8'
+version: "3.8"
 
 services:
+  redis:
+    image: redis
+    ports:
+      - 6379:6379 # HOST:CONTAINER
+
   mongo:
     image: mongo
-    restart: always
-    deploy:
-      replicas: 1
     environment:
       MONGO_INITDB_ROOT_USERNAME: kronk
       MONGO_INITDB_ROOT_PASSWORD: 5RwjSCNN
@@ -15,11 +17,13 @@ services:
 
   mongo-express:
     image: mongo-express
-    restart: always
-    deploy:
-      replicas: 1
     ports:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: kronk
       ME_CONFIG_MONGODB_ADMINPASSWORD: 5RwjSCNN
+
+  s3-ninja:
+    image: scireum/s3-ninja:6.5.2
+    ports:
+      - 9444:9000

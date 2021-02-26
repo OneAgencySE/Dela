@@ -1,5 +1,5 @@
 mod blob_service;
-mod error;
+mod feed_service;
 
 pub use blob_service::BlobService;
-pub use error::ServiceError;
+pub use feed_service::FeedService;

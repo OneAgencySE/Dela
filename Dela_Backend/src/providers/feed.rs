@@ -1,6 +1,5 @@
 use async_stream::{stream, try_stream};
 use futures::{Stream, StreamExt};
-use services::{BlobService, ServiceError};
 use std::pin::Pin;
 use tonic::{Request, Response, Status, Streaming};
 use tracing::{error, info};
@@ -14,18 +13,20 @@ use feed::{
     FeedImage, SubRequest, SubResponse,
 };
 
-use crate::Settings;
+use crate::{Settings, services::FeedService,services::BlobService};
 
 #[derive(Debug)]
 pub struct FeedProvider {
     blob_service: BlobService,
+    feed_service: FeedService
 }
 
 impl FeedProvider {
-    pub fn new(settings: &Settings) -> Result<Self, ServiceError> {
-        Ok(FeedProvider {
-            blob_service: BlobService::new(settings.upload_path.clone())?,
-        })
+    pub fn new(settings: &Settings) -> Self {
+        FeedProvider {
+            blob_service: BlobService::new(settings.upload_path.clone()).unwrap(),
+            feed_service: FeedService{}
+        }
     }
 }
 
@@ -49,7 +50,7 @@ impl FeedHandler for FeedProvider {
             while let Some(req) = stream.next().await {
                 if let Some(state) = req?.state {
 
-                    let feed_stream = stream_test(state, service.clone());
+                    let feed_stream = feed_stream(state, service.clone());
                     futures_util::pin_mut!(feed_stream); // needed for yield iterations to "lock" memory location
 
                     for await value in feed_stream {
@@ -64,8 +65,9 @@ impl FeedHandler for FeedProvider {
     }
 }
 
-// TODO: Break out to it's own service and get rid of the fs:: dependency
-fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResponse> {
+
+
+fn feed_stream(state: State, service: BlobService) -> impl Stream<Item = SubResponse> {
     stream! {
             let mut seen = Box::pin(Vec::new());
             match state {
@@ -82,26 +84,23 @@ fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResp
                         if let Ok(mut reader) = service.reader(&file).await {
                             yield SubResponse {
                                 value: Some(Value::Info(FeedArticle {
-                                article_id: file.clone(),
-                                comments: 0,
-                                likes: 5,
-                            })),
-                        };
-
-                        while let Some(chunk) = reader.read().await.unwrap_or_else(|err| {
-                            error!("Service Error: {}", err);
-                            None
-                        }) {
-                            yield SubResponse {
-                                value: Some(Value::Image(FeedImage {
-                                    chunk_data: chunk,
                                     article_id: file.clone(),
-                                    is_done: false,
-                                    file_ext: ".jpeg".to_string(),
-                                    file_name: file.clone()
-                                })),
+                                    comments: 0,
+                                    likes: 5,
+                                }))
                             };
-                        }
+
+                            while let Some(chunk) = reader.read::<Option<Vec<u8>>>().await.unwrap() {
+                                yield SubResponse {
+                                    value: Some(Value::Image(FeedImage {
+                                        chunk_data: chunk,
+                                        article_id: file.clone(),
+                                        is_done: false,
+                                        file_ext: ".jpeg".to_string(),
+                                        file_name: file.clone()
+                                    })),
+                                };
+                            }
 
                         yield SubResponse {
                             value: Some(Value::Image(FeedImage {
@@ -115,6 +114,7 @@ fn stream_test(state: State, service: BlobService) -> impl Stream<Item = SubResp
                     }
                     info!("Done sending file! {}", &file);
                 }
+
             }
             State::WatchedArticleId(s) => {
                 info!("Adding to watched: {}", &s);

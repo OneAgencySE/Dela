@@ -4,8 +4,6 @@ use tokio::{
 };
 use uuid::Uuid;
 
-use super::ServiceError;
-
 #[derive(Debug, Clone)]
 pub struct BlobService {
     blob_dir: String,
@@ -27,7 +25,7 @@ pub struct BlobStreamReader {
 }
 
 impl BlobService {
-    pub fn new(file_path: String) -> Result<Self, ServiceError> {
+    pub fn new(file_path: String) -> Result<Self, std::io::Error> {
         let service = BlobService {
             blob_dir: file_path,
         };
@@ -35,7 +33,7 @@ impl BlobService {
         Ok(service)
     }
 
-    fn validate_path(&self) -> Result<(), ServiceError> {
+    fn validate_path(&self) -> Result<(), std::io::Error> {
         std::fs::read_dir(&self.blob_dir)?;
         Ok(())
     }
@@ -47,7 +45,7 @@ impl BlobService {
 
     /// Returns a blob reader
     /// It can be used to buffer the file
-    pub async fn reader(&self, blob_id: &str) -> Result<BlobStreamReader, ServiceError> {
+    pub async fn reader(&self, blob_id: &str) -> Result<BlobStreamReader, std::io::Error> {
         let path = format!("{}/{}", &self.blob_dir, blob_id);
         let file = tokio::fs::File::open(path).await?;
         Ok(BlobStreamReader::new(file))
@@ -62,7 +60,7 @@ impl<'a> BlobWriter<'a> {
     }
 
     /// Creates a blob reference with an actual file reference
-    pub async fn create_blob(&self) -> Result<Blob<'a>, ServiceError> {
+    pub async fn create_blob(&self) -> Result<Blob<'a>, std::io::Error> {
         let blob_id = Uuid::new_v4().to_string();
         let path = format!("{}/{}", &self.blob_dir, &blob_id);
         let file = File::create(&path).await?;
@@ -76,14 +74,14 @@ impl<'a> BlobWriter<'a> {
 
 impl Blob<'_> {
     /// Write bytes to file
-    pub async fn append(&mut self, chunk: Vec<u8>) -> Result<(), ServiceError> {
+    pub async fn append(&mut self, chunk: Vec<u8>) -> Result<(), std::io::Error> {
         self.file.write_all(&chunk).await?;
         Ok(())
     }
 
     /// Write the blob to disk and set the correct file extension
     /// returns the final name with the supplied extension
-    pub async fn finalize(self, extension: &str) -> Result<String, ServiceError> {
+    pub async fn finalize(self, extension: &str) -> Result<String, std::io::Error> {
         self.file.sync_all().await?;
         let path = format!("{}/{}", &self.blob_dir, &self.blob_id);
         tokio::fs::rename(&path, format!("{}{}", &path, &extension)).await?;
@@ -92,7 +90,7 @@ impl Blob<'_> {
     }
 
     /// Delete the blob and clean up
-    pub async fn abort(self) -> Result<(), ServiceError> {
+    pub async fn abort(self) -> Result<(), std::io::Error> {
         let path = format!("{}/{}", &self.blob_dir, &self.blob_id);
         tokio::fs::remove_file(&path).await?;
         Ok(())
@@ -122,8 +120,8 @@ impl BlobStreamReader {
     ///         assert!(chunk.len() > 0)
     ///  }
     /// ```
-    pub async fn read(&mut self) -> Result<Option<Vec<u8>>, ServiceError> {
-        let res: usize = self.stream.read(&mut self.buffer).await?;
+    pub async fn read<E>(&mut self) -> Result<Option<Vec<u8>>, String>{
+        let res: usize = self.stream.read(&mut self.buffer).await.map_err(|e| e.to_string())?;
 
         Ok(if res > 0 {
             Some(self.buffer.into())

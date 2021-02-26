@@ -58,7 +58,15 @@ if [[ -f ./Dela_Backend/.env ]]; then
 else
      echo "Be sure to check out the backend .env file"
      mkdir -p ./Dela_Backend/Upload
-     echo 'TEST_JPEG=test_img.jpeg\nUPLOAD_PATH=Upload\nSERVER_ADDR=0.0.0.0:50051' > ./Dela_Backend/.env
+     echo '# Main API
+TEST_IMG=test_img.png
+UPLOAD_PATH=Upload
+DELA_PROV_ADDR=0.0.0.0:50051
+
+# Resizer service
+S3_ENDPOINT=0.0.0.0:9444
+S3_REGION=eu-north-1
+IMG_PROV_ADDR=0.0.0.0:50052' > ./Dela_Backend/.env
 fi
 
 if [ ! -d "./Dela_Backend/certs" ]; then

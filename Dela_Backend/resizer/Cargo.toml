@@ -1,0 +1,27 @@
+[package]
+name = "resizer"
+version = "0.1.0"
+authors = ["Alexander Herlin <alexander.herlin@outlook.com>"]
+edition = "2018"
+description = "This service handels images, stores originals and generates optimized versions. Communication is done over gRPC"
+
+[dependencies]
+dotenv = "0.15"
+tonic = "0.4"
+prost = "0.7"
+anyhow = "1.0"
+image = "0.23"
+uuid = "0.8"
+
+rusoto_core = "0.46"
+rusoto_s3 = "0.46"
+bytes = "1.0"
+
+tokio = { version = "1.0", features = ["macros","rt-multi-thread", "net", "fs"] }
+tokio-stream = { version =  "0.1", features = ["net"] }
+async-stream = "0.3"
+futures = { version = "0.3", default-features = false, features = ["alloc"] }
+futures-util = "0.3"
+
+[build-dependencies]
+tonic-build = { version="0.4", features = ["prost"] }

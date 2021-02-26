@@ -1,8 +1,8 @@
-use crate::Settings;
+use crate::{Settings, services::BlobService};
 use async_stream::try_stream;
 use futures::Stream;
-use services::BlobService;
-use services::ServiceError;
+use futures::io::Read;
+
 use std::pin::Pin;
 use tonic::{Request, Response, Status, Streaming};
 use tracing::{error, info};
@@ -19,10 +19,10 @@ pub struct BlobProvider {
 }
 
 impl BlobProvider {
-    pub fn new(settings: &Settings) -> Result<Self, ServiceError> {
-        Ok(BlobProvider {
-            blob_service: BlobService::new(settings.upload_path.clone())?,
-        })
+    pub fn new(settings: &Settings) -> Self {
+        BlobProvider {
+            blob_service: BlobService::new(settings.upload_path.clone()).unwrap(),
+        }
     }
 }
 
@@ -39,14 +39,22 @@ impl BlobHandler for BlobProvider {
         let blob_id = request.into_inner().blob_id;
         info!("Requested download of: {}", &blob_id);
         let service = self.blob_service.clone();
+
+
+        let mut stream =
+        service.reader(&blob_id)
+        .await
+        .map_err(map_service_error)?;
+
+        let m = stream.read::<Option<Vec<u8>>>().await.unwrap();
+
         let output = try_stream! {
-            let mut reader =
+            let mut stream =
                 service.reader(&blob_id)
                 .await
                 .map_err(map_service_error)?;
 
-                // TODO: stream!-ify the blob_service
-            while let Some(chunk) = reader.read().await
+            while let Some(chunk) = stream.read::<Option<Vec<u8>>>().await
                 .unwrap_or_else(|err| { error!("Service Error: {}", err); None })
             {
                 yield BlobData { data: Some(Data::ChunkData(chunk)), };
@@ -113,6 +121,6 @@ impl BlobHandler for BlobProvider {
     }
 }
 
-pub fn map_service_error(se: ServiceError) -> tonic::Status {
+pub fn map_service_error<E: std::error::Error>(se: E) -> tonic::Status {
     Status::unavailable(format!("Service error: {}", se))
 }

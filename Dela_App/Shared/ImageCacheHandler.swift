@@ -10,9 +10,9 @@ import Kingfisher
 import SwiftUI
 
 struct ImageRef {
-    let origninal: URL
-    let web: URL
-    let phone: URL
+    let origninal: String
+    let web: String
+    let phone: String
 }
 
 struct ImageCacheHandler {
@@ -44,13 +44,13 @@ struct ImageCacheHandler {
         ImageCache.default.store(webImage, forKey: webName)
 
         completeion(ImageRef(
-                        origninal: URL( string: fileName)!,
-                        web: URL( string: webName)!,
-                        phone: URL( string: phoneName)!))
+                        origninal: fileName,
+                        web: webName,
+                        phone: phoneName))
     }
 
-    func getImage(name: URL, completion: ((Data) -> Void)?) {
-        ImageCache.default.retrieveImage(forKey: name.absoluteString) { res in
+    func getImage(name: String, completion: ((Data) -> Void)?) {
+        ImageCache.default.retrieveImage(forKey: URL(string: name)!.absoluteString) { res in
             switch res {
                 case .success(let image):
                     completion?((image.image?.pngData())!)

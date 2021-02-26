@@ -22,7 +22,7 @@ class ContentViewModel: ObservableObject {
     private let downloadPublisher = PassthroughSubject<String, Never>()
 
     private var uploadCancellable: AnyCancellable?
-    private let uploadPublisher = PassthroughSubject<Data, Never>()
+    private let uploadPublisher = PassthroughSubject<(String, Data), Never>()
 
 	init() {
 		initDownloadPublisher()
@@ -52,8 +52,8 @@ class ContentViewModel: ObservableObject {
 
 		uploadCancellable = uploadPublisher
             .flatMap { [unowned self] input -> AnyPublisher<BlobInfo, UserInfoError> in
-				self.imageData = input
-                return self.blobService.uploadImge(data: input, fileName: "foo.jpeg")
+                self.imageData = input.1
+                return self.blobService.uploadImge(data: input.1, fileName: input.0)
             }
 			.subscribe(on: DispatchQueue.global())
 			.receive(on: DispatchQueue.main)
@@ -80,15 +80,15 @@ class ContentViewModel: ObservableObject {
     func didPressUpload(_ images: [ImageRef]) {
         images.forEach { img in
             ImageCacheHandler.default.getImage(name: img.origninal ) { image in
-                self.uploadPublisher.send(image)
+                self.uploadPublisher.send((img.origninal, image))
             }
 
             ImageCacheHandler.default.getImage(name: img.phone ) { image in
-                self.uploadPublisher.send(image)
+                self.uploadPublisher.send((img.phone, image))
             }
 
             ImageCacheHandler.default.getImage(name: img.web ) { image in
-                self.uploadPublisher.send(image)
+                self.uploadPublisher.send((img.web, image))
             }
         }
     }

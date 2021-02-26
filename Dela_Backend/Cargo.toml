@@ -6,21 +6,28 @@ edition = "2018"
 publish = false
 
 [workspace]
-members = [ ".", "services" ]
+members = [ ".", "synchronizer", "resizer" ]
 
 [[test]]
 name = "integration"
 path = "tests/lib.rs"
 
 [dependencies]
-services = { path="./services" }
+# For simplicity sake we start the sub modules as threads
+# This could/should be broken out into separate services for deployment
+synchronizer = { path= "./synchronizer" }
+resizer = { path = "./resizer" }
 
 tonic = "0.4"
 prost = "0.7"
-dotenv = "0.15.0"
+dotenv = "0.15"
+redis = "0.20"
+
+uuid = { version = "0.8", features = ["v4"] }
+mongodb = "1.1.1"
 
 # Runtime
-tokio = { version = "1.0", features = ["macros","rt-multi-thread", "net"] }
+tokio = { version = "1.0", features = ["macros","rt-multi-thread", "net", "fs"] }
 tokio-stream = { version =  "0.1", features = ["net"] }
 async-stream = "0.3"
 futures = { version = "0.3", default-features = false, features = ["alloc"] }
